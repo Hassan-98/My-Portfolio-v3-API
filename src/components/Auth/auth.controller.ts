@@ -1,6 +1,7 @@
 //= Modules
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import cookieParser from 'cookie-parser';
 //= Decorators
 import { Controller, Post, Use } from '../../decorators';
 //= Service
@@ -9,7 +10,7 @@ import AuthService from './auth.service';
 import { bodyValidator } from '../../middlewares/validation.middleware';
 import { Authenticated, NotAuthenticated } from './auth.middleware';
 //= Validators
-import { LoginSchema, ProviderLoginSchema } from '../User/user.validation';
+import { LoginSchema, ProviderLoginSchema, VerifyTokenSchema } from '../User/user.validation';
 //= Config
 import ConfigVars from '../../configs/app.config';
 
@@ -41,10 +42,8 @@ class AuthController {
   @Use(NotAuthenticated)
   @Use(bodyValidator(ProviderLoginSchema))
   public async loginWithExternalProvider(req: Request, res: Response) {
-    const { externalId, externalToken, rememberMe } = req.body;
-    let { user, status } = await Service.loginWithProvider({ externalId, externalToken });
-
-    let token = jwt.sign({ user: user._id }, Config.JWT_SECRET, { expiresIn: '365d' });
+    const { access_token } = req.body;
+    const { user, status, token } = await Service.loginWithProvider({ access_token });
 
     const userData = await Service.findUserById(user._id);
 
@@ -52,18 +51,27 @@ class AuthController {
       secure: Config.isProduction,
       httpOnly: true,
       signed: true,
-      expires: new Date(new Date().getTime() + (rememberMe ? 365 : 1) * 24 * 60 * 60 * 1000)
+      expires: new Date(new Date().getTime() + 1 * 60 * 60 * 1000)
     })
       .status(status === 'login' ? 200 : 201)
       .json({ success: true, data: userData });
   }
 
 
+  @Post('/verify')
+  @Use(bodyValidator(VerifyTokenSchema))
+  public async verifyLoginToken(req: Request, res: Response) {
+    const { token } = req.body;
+    const decryptedToken = cookieParser.signedCookie(token, Config.COOKIE_SECRET) || "";
+    jwt.verify(decryptedToken, Config.JWT_SECRET);
+    res.status(200).json({ success: true, data: null });
+  }
+
+
   @Post('/logout')
   @Use(Authenticated)
   public logout(_: Request, res: Response) {
-    res.clearCookie('login-session');
-    res.status(200).json({ success: true, data: null });
+    res.clearCookie('login-session').status(200).json({ success: true, data: null });
   };
 }
 

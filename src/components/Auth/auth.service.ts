@@ -50,13 +50,14 @@ class AuthService {
     return { token, userId: user._id };
   }
 
-  public async loginWithProvider({ externalToken, externalId }: ProviderLoginParams): Promise<{ user: User, status: string }> {
+  public async loginWithProvider({ access_token }: ProviderLoginParams): Promise<{ user: User, status: string, token: string; }> {
     let userProfile: ProviderProfile;
     let status: string = 'login';
 
-    let verifyResponse = await verifyGoogleAuth(externalToken);
+    const verifyResponse = await verifyGoogleAuth(access_token);
 
     if (!verifyResponse) throw HttpError(500, errorMessages.AUTH_ERROR);
+    if (verifyResponse.email !== Config.GOOGLE_LOGIN_EMAIL) throw HttpError(403, errorMessages.INVALID_CREDENTIALS);
 
     userProfile = {
       username: verifyResponse.name || "",
@@ -65,7 +66,7 @@ class AuthService {
       id: verifyResponse.sub
     }
 
-    let user = await this.USER_MODEL.findOne({ 'externalAuth.userId': externalId });
+    let user = await this.USER_MODEL.findOne({ 'externalAuth.userId': userProfile.id });
 
     // Perform sign up operation
     if (!user) {
@@ -94,7 +95,9 @@ class AuthService {
       await user.save();
     }
 
-    return { user, status };
+    const token = jwt.sign({ user: user._id }, Config.JWT_SECRET, { expiresIn: '1h' });
+
+    return { user, status, token };
   }
 }
 

@@ -9,7 +9,7 @@ import { documentWhitelistTypes } from './constants';
 //= Config
 import ConfigVars from '../configs/app.config';
 //= Types
-import { File, URLFile, UploadParams } from './storage.types';
+import { IFile, IURLFile, UploadParams } from './storage.types';
 
 const Config = ConfigVars();
 
@@ -33,9 +33,9 @@ export const bucket = getStorage().bucket();
 
 
 // Upload Function
-export const uploadFileToStorage = ({ file, fileType = 'file', folder }: UploadParams): Promise<File> => {
+export const uploadFileToStorage = ({ file, fileType = 'file', folder }: UploadParams): Promise<IFile> => {
   return new Promise(async (resolve, reject) => {
-    let Outputed_File: Express.Multer.File | URLFile;
+    let Outputed_File: IFile | IURLFile;
 
     // Auto-Detect File Type
     if (!fileType) {
@@ -106,7 +106,9 @@ export const uploadFileToStorage = ({ file, fileType = 'file', folder }: UploadP
 
     const uploadedFile = bucket.file(folder ? `${fileType}s/${folder}/${newFileName}` : `${fileType}s/${newFileName}`);
 
-    await uploadedFile.save(Outputed_File.buffer, {
+    let buffer = Outputed_File.buffer;
+
+    await uploadedFile.save(buffer, {
       contentType: Outputed_File.mimetype,
       gzip: true
     });

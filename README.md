@@ -1,4 +1,4 @@
-# My Portfolio API - Server
+# My Portfolio - Server & API
 This codebase is for the server side api of my portfolio.
 
 ### Dependencies
@@ -29,7 +29,7 @@ Unit tests are using the Jasmine Framework.
 
 ## Built With
 
-- [Node](https://nodejs.org) - Javascript Runtime
+- [Nodejs](https://nodejs.org) - Javascript Runtime
 - [Express](https://expressjs.com/) - Javascript API Framework
 - [MongoDB (Mongoose)](https://www.mongodb.com) - NoSQL Database
 - [TypeScript](https://expressjs.com/)

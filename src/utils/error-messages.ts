@@ -1,4 +1,5 @@
 const errorMessages = {
+  NOT_EXIST: (doc: string, id?: string): string => id ? `(${doc}) with ID: (${id}) doesn't exist in the database` : `There are no '${doc}' matching your query`,
   EMPTY: (field: string): string => `(${field}) field can't be empty`,
   REQUIRED: (field: string): string => `(${field}) field is required`,
   NOT_VALID: (field: string): string => `The entered (${field}) has an invalid value`,

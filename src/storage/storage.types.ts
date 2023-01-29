@@ -1,4 +1,4 @@
-export interface URLFile {
+export interface IURLFile {
   buffer: Buffer;
   fieldname: string;
   originalname: string;
@@ -7,7 +7,7 @@ export interface URLFile {
   size: number;
 }
 
-export interface File {
+export interface IFile {
   name: string;
   url: string;
   path: string;
@@ -15,7 +15,7 @@ export interface File {
 }
 
 export interface UploadParams {
-  file: Express.Multer.File | URLFile;
+  file: Express.Multer.File | IURLFile;
   fileType: string;
   folder: string
 }

@@ -1,10 +1,17 @@
 //= Models
 import USER, { UserModel } from './user.model';
 //= Utils
-import queryBuilder, { QueryParams } from '../../utils/queryBuilder';
+import queryBuilder from '../../utils/queryBuilder';
+import errorMessages from '../../utils/error-messages';
+//= Middlwares
+import { HttpError } from '../../middlewares/error.handler.middleware';
+//= Config
+import ConfigVars from '../../configs/app.config';
 //= Types
 import { User } from './user.types';
+import type { QueryParams } from '../../utils/queryBuilder';
 
+const Config = ConfigVars();
 class UserService {
   public MODEL: UserModel = USER;
 
@@ -26,7 +33,22 @@ class UserService {
     return user;
   }
 
-  public async updateUserData(id: string, updates: Partial<User>, currentUser: User): Promise<User | null> {
+  public async updateUserPassword({ id, currentPassword, newPassword }: { id: string, currentPassword: string, newPassword: string }): Promise<User | null> {
+    const user: User | null = await this.MODEL.findById(id, { email: 1, password: 1 });
+    if (!user) throw HttpError(422, errorMessages.INVALID_CREDENTIALS);
+
+    if (user.password !== 'not-linked') {
+      const decryptedPassword = CryptoJS.AES.decrypt(user.password, Config.CRYPTO_SECRET).toString(CryptoJS.enc.Utf8);
+      if (decryptedPassword !== currentPassword) throw HttpError(422, errorMessages.INVALID_CREDENTIALS);
+    }
+
+    user.password = CryptoJS.AES.encrypt(newPassword, Config.CRYPTO_SECRET).toString();
+    await user.save();
+
+    return user;
+  }
+
+  public async updateUserData(id: string, updates: Partial<Exclude<User, 'password'>>): Promise<User | null> {
     const user: User = await this.MODEL.findByIdAndUpdate(id, updates, { new: true, runValidators: true }).lean();
     return user;
   }

@@ -18,6 +18,7 @@ interface EnvironmentVariables {
   ServiceAccount_project_id: string;
   ServiceAccount_private_key: string;
   ServiceAccount_client_email: string;
+  GOOGLE_LOGIN_EMAIL: string;
   isProduction: boolean;
 }
 
@@ -36,6 +37,7 @@ const ENV = (): EnvironmentVariables => cleanEnv(process.env, {
   CRYPTO_SECRET: str(),
   GOOGLE_CLIENT_ID: str(),
   GOOGLE_CLIENT_SECERT: str(),
+  GOOGLE_LOGIN_EMAIL: str(),
   ServiceAccount_project_id: str(),
   ServiceAccount_private_key: str(),
   ServiceAccount_client_email: str(),

@@ -1,9 +1,16 @@
 //= Types
 import { RequestHandler } from '../types/request.type';
 
-export function bodyValidator(Schema: any): RequestHandler {
+export function bodyValidator(Schema: any, toBeParsedFields?: string[]): RequestHandler {
   return (req, res, next) => {
-    let validtion_check = Schema.safeParse(req.body);
+    let body = req.body;
+    if (toBeParsedFields && toBeParsedFields.length) {
+      toBeParsedFields.forEach(field => {
+        if (req.body[field]) body[field] = JSON.parse(req.body[field]);
+      })
+    }
+
+    let validtion_check = Schema.safeParse(body);
     if (!validtion_check.success) {
       let InvalidFields = validtion_check.error.issues.map((issue: any) => `${issue.path.join('.')}: ${issue.message}`).join(' | ');
 

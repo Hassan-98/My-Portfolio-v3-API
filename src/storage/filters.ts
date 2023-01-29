@@ -4,10 +4,10 @@ import sharp from 'sharp';
 //= Constants
 import { fileSizes, documentWhitelistTypes, audioWhitelistExtentions, videoWhitelistExtentions, imagesWhitelistExtentions } from './constants';
 //= Types
-import { URLFile } from './storage.types';
+import { IURLFile } from './storage.types';
 
 // Filter and Compress Images
-export const FilterAndCompressImages = (file: Express.Multer.File | URLFile): Promise<Express.Multer.File | URLFile> => {
+export const FilterAndCompressImages = (file: Express.Multer.File | IURLFile): Promise<Express.Multer.File | IURLFile> => {
   return new Promise(async (resolve, reject) => {
     // File Type Filter
     const fileType = file.mimetype.split("/")[0];
@@ -22,7 +22,7 @@ export const FilterAndCompressImages = (file: Express.Multer.File | URLFile): Pr
     if (imagesWhitelistExtentions.indexOf(fileExtention.toLowerCase()) == -1) return reject("Image type is not supported");
 
     // Use Sharp to compress image
-    var compressedFile: Express.Multer.File | URLFile = {
+    var compressedFile: Express.Multer.File | IURLFile = {
       ...file,
       mimetype: "image/webp",
       buffer: await sharp(file.buffer).webp({ nearLossless: true, quality: 50, alphaQuality: 80, effort: 5 }).toBuffer()
@@ -35,7 +35,7 @@ export const FilterAndCompressImages = (file: Express.Multer.File | URLFile): Pr
 }
 
 // Filter Videos
-export const FilterVideos = (file: Express.Multer.File | URLFile): Promise<Express.Multer.File | URLFile> => {
+export const FilterVideos = (file: Express.Multer.File | IURLFile): Promise<Express.Multer.File | IURLFile> => {
   return new Promise((resolve, reject) => {
     // File Type Filter
     const fileType = file.mimetype.split("/")[0];
@@ -54,7 +54,7 @@ export const FilterVideos = (file: Express.Multer.File | URLFile): Promise<Expre
 }
 
 // Filter Videos
-export const FilterAudios = (file: Express.Multer.File | URLFile): Promise<Express.Multer.File | URLFile> => {
+export const FilterAudios = (file: Express.Multer.File | IURLFile): Promise<Express.Multer.File | IURLFile> => {
   return new Promise((resolve, reject) => {
     // File Type Filter
     const fileType = file.mimetype.split("/")[0];
@@ -73,7 +73,7 @@ export const FilterAudios = (file: Express.Multer.File | URLFile): Promise<Expre
 }
 
 // Filter Files
-export const FilterDocs = (file: Express.Multer.File | URLFile): Promise<Express.Multer.File | URLFile> => {
+export const FilterDocs = (file: Express.Multer.File | IURLFile): Promise<Express.Multer.File | IURLFile> => {
   return new Promise((resolve, reject) => {
     // File Type Filter
     const fileType = file.mimetype.split("/")[1];
@@ -89,7 +89,7 @@ export const FilterDocs = (file: Express.Multer.File | URLFile): Promise<Express
 }
 
 // Filter Files
-export const FilterFiles = (file: Express.Multer.File | URLFile): Promise<Express.Multer.File | URLFile> => {
+export const FilterFiles = (file: Express.Multer.File | IURLFile): Promise<Express.Multer.File | IURLFile> => {
   return new Promise((resolve, reject) => {
     // File Size Filter
     const maxFileSize = fileSizes.files * (1024 * 1024)

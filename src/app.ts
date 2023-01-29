@@ -12,7 +12,11 @@ import { AppRouter } from './router/AppRouter';
 import './components/Root/root.controller';
 import './components/Auth/auth.controller';
 import './components/User/user.controller';
+import './components/General/general.controller';
+import './components/Work/work.controller';
 import './components/Logs/log.controller';
+//= Migration
+import migrateGeneralSettings from './components/General/general.migration';
 //= Database Configurations
 import { databaseConfig } from './configs/db.config';
 
@@ -30,12 +34,17 @@ class App {
     this.connectToDatabase();
     this.initializeMiddlewares();
     this.initializeAppRouter();
+    this.initMigrations();
   }
 
   public start() {
-    const server = this.app.listen(this.port, () => {
+    this.app.listen(this.port, () => {
       console.log('\x1b[32m%s\x1b[0m', `\n✅ [Server] listening at port ${this.port}`);
     });
+  }
+
+  private async initMigrations() {
+    await migrateGeneralSettings();
   }
 
   private initializeMiddlewares() {

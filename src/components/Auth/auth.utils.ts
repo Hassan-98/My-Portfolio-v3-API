@@ -1,14 +1,21 @@
-import { OAuth2Client } from 'google-auth-library';
+import axios from 'axios';
 
-export const verifyGoogleAuth = async (token: string) => {
-  const client = new OAuth2Client(process.env.G_CLIENT_ID);
+interface GoogleResponse {
+  sub: string,
+  name: string,
+  given_name: string,
+  family_name: string,
+  picture: string,
+  email: string,
+  email_verified: boolean,
+  locale: string
+}
 
-  const ticket = await client.verifyIdToken({
-    idToken: token,
-    audience: process.env.G_CLIENT_ID
-  });
-
-  const payload = ticket.getPayload();
-
-  return payload;
+export const verifyGoogleAuth = async (token: string): Promise<GoogleResponse | null> => {
+  try {
+    const res = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`);
+    return res.data;
+  } catch (err: any) {
+    return null;
+  }
 }

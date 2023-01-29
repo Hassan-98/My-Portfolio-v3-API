@@ -26,7 +26,7 @@ export const Authenticated: RequestHandler = async (req, res, next) => {
 
     if (!userId) return res.status(403).json({ success: false, data: null, message: errorMessages.AUTH_REQUIRED });
 
-    const user: User = await USER.findById(userId).select({ username: 1, role: 1, accountStatus: 1, email_confirmed: 1 }).populate('role').lean();
+    const user: User = await USER.findById(userId).select({ username: 1, email: true, external_auth: 1 }).lean();
 
     req.user = user;
 
@@ -60,7 +60,7 @@ export const PassUser: RequestHandler = async (req, res, next) => {
 
     if (!userId) return next();
 
-    const user: User = await USER.findById(userId).select({ role: 1, accountStatus: 1, email_confirmed: 1, profile_completed: 1 }).populate('role').lean();
+    const user: User = await USER.findById(userId).select({ username: 1, email: true, external_auth: 1 }).lean();
 
     req.user = user;
 
