@@ -36,7 +36,7 @@ export default function queryBuilder(query: QueryParams) {
       if (field.includes('(') && !field.includes('$')) {
         let fieldParts = field.split('(');
         path = fieldParts[0];
-        mainSelects = fieldParts[1];
+        mainSelects = fieldParts[1].replaceAll('-', ' ').slice(0, -1);
       } else if (field.includes('(') && field.includes('$')) {
         let fieldParts = field.split('$');
 

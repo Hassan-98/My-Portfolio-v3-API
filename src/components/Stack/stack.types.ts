@@ -15,4 +15,4 @@ export enum StackType {
   full = 'front back'
 }
 
-export interface IStackSchema extends IStack, Document { }
+export interface IStackDocument extends IStack, Document { }

@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
-import { IStack, IStackSchema } from './stack.types';
+import { IStack, IStackDocument } from './stack.types';
 import { HttpError } from '../../middlewares/error.handler.middleware';
 import errorMessages from '../../utils/error-messages';
 
-const StackSchema = new mongoose.Schema<IStackSchema>({
+const StackSchema = new mongoose.Schema<IStackDocument>({
   name: {
     type: String,
     trim: true,
@@ -25,12 +25,6 @@ const StackSchema = new mongoose.Schema<IStackSchema>({
     enum: ['front', 'back', 'tools', 'front back'],
     validate(field: string) {
       if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('type'))
-    }
-  },
-  order: {
-    type: Number,
-    validate(field: number) {
-      if (field < 0) throw HttpError(400, errorMessages.NOT_VALID('order'))
     }
   },
   isNotCompitable: {

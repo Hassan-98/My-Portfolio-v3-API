@@ -10,14 +10,14 @@ export function bodyValidator(Schema: any, toBeParsedFields?: string[]): Request
       })
     }
 
-    let validtion_check = Schema.safeParse(body);
-    if (!validtion_check.success) {
-      let InvalidFields = validtion_check.error.issues.map((issue: any) => `${issue.path.join('.')}: ${issue.message}`).join(' | ');
+    let validation_check = Schema.safeParse(body);
+    if (!validation_check.success) {
+      let InvalidFields = validation_check.error.issues.map((issue: any) => `${issue.path.join('.')}: ${issue.message}`).join(' | ');
 
       res.status(422).json({
         success: false,
         data: null,
-        errors: validtion_check.error.issues,
+        errors: validation_check.error.issues,
         message: `Invalid request body, invalid fields (${InvalidFields})`
       });
     }
@@ -28,14 +28,14 @@ export function bodyValidator(Schema: any, toBeParsedFields?: string[]): Request
 
 export function paramsValidator(Schema: any): RequestHandler {
   return (req, res, next) => {
-    let validtion_check = Schema.safeParse(req.params);
-    if (!validtion_check.success) {
-      let InvalidFields = validtion_check.error.issues.map((issue: any) => `${issue.path.join('.')}: ${issue.message}`).join(' | ');
+    let validation_check = Schema.safeParse(req.params);
+    if (!validation_check.success) {
+      let InvalidFields = validation_check.error.issues.map((issue: any) => `${issue.path.join('.')}: ${issue.message}`).join(' | ');
 
       res.status(422).json({
         success: false,
         data: null,
-        errors: validtion_check.error.issues,
+        errors: validation_check.error.issues,
         message: `Invalid request params, invalid fields (${InvalidFields})`
       });
     }

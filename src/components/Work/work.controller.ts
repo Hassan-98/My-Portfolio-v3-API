@@ -25,14 +25,14 @@ class WorksController {
   @Get('/:id')
   @Use(paramsValidator(IDSchema))
   public async getAWorkById(req: Request, res: Response) {
-    const work = await Service.getWorkById(req.params.id);
+    const work = await Service.getWorkById(req.params.id, req.query);
     res.status(200).json({ success: true, data: work });
   };
 
   @Post('/')
   @Use(Authenticated)
   @Use(multer.fields([{ name: "desktop", maxCount: 1 }, { name: "mobile", maxCount: 1 }]))
-  @Use(bodyValidator(WorkSchema, ['stack', 'links']))
+  @Use(bodyValidator(WorkSchema, ['stack', 'links', 'order']))
   public async addNewWork(req: Request, res: Response) {
     const uploaded_images = req.files as { [fieldname: string]: Express.Multer.File[] };
 

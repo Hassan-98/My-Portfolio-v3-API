@@ -6,9 +6,12 @@ import checkObjectId from '../../utils/checkObjectId';
 import { StackType } from '../../types';
 
 export const StackSchema = z.object({
-  name: z.string().trim(),
-  image: z.string().url().trim(),
+  name: z.string(),
+  image: z.string().url().optional(),
   type: z.nativeEnum(StackType),
-  order: z.number().gt(0),
   isNotCompitable: z.boolean().optional()
+});
+
+export const IDSchema = z.object({
+  id: z.string().refine((val) => checkObjectId(val), { message: "must be a valid id" })
 });
