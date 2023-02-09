@@ -1,8 +1,14 @@
 import GENERAL from './general.model';
+import STACK from '../Stack/stack.model';
 
 export default async function migrateGeneralSettings() {
   const generalSettingsCount = await GENERAL.count({});
+
   if (generalSettingsCount <= 0) {
+    const stacks = await STACK.find({
+      name: { $in: ['Node.js', 'MongoDB', 'React', 'Vue', 'TypeScript'] }
+    }).lean();
+
     await GENERAL.create({
       header: {
         jobTitle: "MERN Stack developer",
@@ -24,33 +30,23 @@ export default async function migrateGeneralSettings() {
       },
       recentStack: [
         {
-          name: "Node.js",
-          image: "nodejs.svg",
-          type: "back",
+          stack: stacks.find(stack => stack.name === "Node.js")?._id,
           order: 1
         },
         {
-          name: "MongoDB",
-          image: "mongodb.svg",
-          type: "back",
+          stack: stacks.find(stack => stack.name === "MongoDB")?._id,
           order: 2
         },
         {
-          name: "React",
-          image: "react.svg",
-          type: "front",
+          stack: stacks.find(stack => stack.name === "React")?._id,
           order: 3
         },
         {
-          name: "Vue",
-          image: "vue.svg",
-          type: "front",
+          stack: stacks.find(stack => stack.name === "Vue")?._id,
           order: 4
         },
         {
-          name: "TypeScript",
-          image: "typescript.svg",
-          type: "front back",
+          stack: stacks.find(stack => stack.name === "TypeScript")?._id,
           order: 5
         }
       ]

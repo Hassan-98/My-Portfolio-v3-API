@@ -23,7 +23,7 @@ export interface IWork {
     desktop: string;
     mobile: string;
   };
-  stack: Stack[];
+  stack: { stack: string; order: number }[];
   order: number;
 }
 

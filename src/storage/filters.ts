@@ -7,7 +7,7 @@ import { fileSizes, documentWhitelistTypes, audioWhitelistExtentions, videoWhite
 import { IURLFile } from './storage.types';
 
 // Filter and Compress Images
-export const FilterAndCompressImages = (file: Express.Multer.File | IURLFile): Promise<Express.Multer.File | IURLFile> => {
+export const FilterAndCompressImages = ({ file, covertToWebp }: { file: Express.Multer.File | IURLFile; covertToWebp: boolean }): Promise<Express.Multer.File | IURLFile> => {
   return new Promise(async (resolve, reject) => {
     // File Type Filter
     const fileType = file.mimetype.split("/")[0];
@@ -22,11 +22,11 @@ export const FilterAndCompressImages = (file: Express.Multer.File | IURLFile): P
     if (imagesWhitelistExtentions.indexOf(fileExtention.toLowerCase()) == -1) return reject("Image type is not supported");
 
     // Use Sharp to compress image
-    var compressedFile: Express.Multer.File | IURLFile = {
+    var compressedFile: Express.Multer.File | IURLFile = covertToWebp ? {
       ...file,
-      mimetype: "image/webp",
+      mimetype: 'image/webp',
       buffer: await sharp(file.buffer).webp({ nearLossless: true, quality: 50, alphaQuality: 80, effort: 5 }).toBuffer()
-    }
+    } : file;
 
     if (!compressedFile) return reject("An error occurred while uploading the file");
 

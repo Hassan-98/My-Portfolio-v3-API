@@ -93,37 +93,15 @@ const GeneralSchema = new mongoose.Schema<IGeneralSchema>({
   },
   recentStack: [
     {
-      _id: false,
-      name: {
-        type: String,
-        trim: true,
-        validate(field: string) {
-          if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('recentStack.name'))
-        }
-      },
-      image: {
-        type: String,
-        trim: true,
-        validate(field: string) {
-          if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('recentStack.image'))
-        }
-      },
-      type: {
-        type: String,
-        enum: ['front', 'back', 'tools', 'front back'],
-        validate(field: string) {
-          if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('recentStack.type'))
-        }
+      stack: {
+        type: mongoose.Types.ObjectId,
+        ref: "Stack"
       },
       order: {
         type: Number,
         validate(field: number) {
           if (field < 0) throw HttpError(400, errorMessages.NOT_VALID('recentStack.order'))
         }
-      },
-      isNotCompitable: {
-        type: Boolean,
-        default: false
       }
     }
   ]

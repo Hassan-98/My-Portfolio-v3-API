@@ -1,6 +1,4 @@
 import { Document } from 'mongoose';
-//= Types
-import { StackType, Stack } from './../../types';
 
 export interface IGeneral {
   header: {
@@ -20,7 +18,7 @@ export interface IGeneral {
     linkedin: string;
     twitter: string;
   };
-  recentStack: Stack[];
+  recentStack: { stack: string; order: number }[];
 }
 
 export interface IGeneralSchema extends IGeneral, Document { }

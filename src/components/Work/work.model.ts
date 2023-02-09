@@ -100,30 +100,9 @@ const WorkSchema = new mongoose.Schema<IWorkDocument>({
   },
   stack: [
     {
-      _id: false,
-      name: {
-        type: String,
-        trim: true,
-        required: [true, errorMessages.REQUIRED('stack.name')],
-        validate(field: string) {
-          if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('stack.name'))
-        }
-      },
-      image: {
-        type: String,
-        trim: true,
-        required: [true, errorMessages.REQUIRED('stack.image')],
-        validate(field: string) {
-          if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('stack.image'))
-        }
-      },
-      type: {
-        type: String,
-        enum: [StackType.front, StackType.back, StackType.tools, StackType.full],
-        required: [true, errorMessages.REQUIRED('stack.type')],
-        validate(field: string) {
-          if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('stack.type'))
-        }
+      stack: {
+        type: mongoose.Types.ObjectId,
+        ref: "Stack"
       },
       order: {
         type: Number,
@@ -131,10 +110,6 @@ const WorkSchema = new mongoose.Schema<IWorkDocument>({
         validate(field: number) {
           if (field < 0) throw HttpError(400, errorMessages.NOT_VALID('stack.order'))
         }
-      },
-      isNotCompitable: {
-        type: Boolean,
-        default: false
       }
     }
   ],

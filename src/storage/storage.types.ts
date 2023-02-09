@@ -18,4 +18,5 @@ export interface UploadParams {
   file: Express.Multer.File | IURLFile;
   fileType: string;
   folder: string
+  covertToWebp?: boolean;
 }

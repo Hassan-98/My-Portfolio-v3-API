@@ -14,9 +14,11 @@ import './components/Auth/auth.controller';
 import './components/User/user.controller';
 import './components/General/general.controller';
 import './components/Work/work.controller';
+import './components/Stack/stack.controller';
 import './components/Logs/log.controller';
 //= Migration
 import migrateGeneralSettings from './components/General/general.migration';
+import migrateStacks from './components/Stack/stack.migration';
 //= Database Configurations
 import { databaseConfig } from './configs/db.config';
 
@@ -44,6 +46,7 @@ class App {
   }
 
   private async initMigrations() {
+    await migrateStacks();
     await migrateGeneralSettings();
   }
 

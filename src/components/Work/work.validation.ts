@@ -22,11 +22,8 @@ export const WorkSchema = z.object({
     mobile: z.string().url(),
   }).optional(),
   stack: z.array(z.object({
-    name: z.string().trim(),
-    image: z.string().trim(),
-    type: z.nativeEnum(StackType),
+    stack: z.string().refine((val) => checkObjectId(val), { message: "must be a valid id" }),
     order: z.number().gt(0),
-    notCompitable: z.boolean().optional()
   })),
   order: z.number().gt(0),
 });

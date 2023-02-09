@@ -17,7 +17,7 @@ class GeneralService {
   public MODEL: IGeneralModel = GENERAL;
 
   public async getGeneralSettings(): Promise<IGeneral> {
-    let generalSettings: IGeneral = await this.MODEL.findOne({}).lean();
+    let generalSettings: IGeneral = await this.MODEL.findOne({}, {}, { populate: 'recentStack.stack' }).lean();
     return generalSettings;
   }
 }

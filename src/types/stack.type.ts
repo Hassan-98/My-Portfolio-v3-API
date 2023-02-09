@@ -10,5 +10,8 @@ export type Stack = {
   image: string;
   type: StackType;
   order: number;
-  notCompitable?: boolean;
+  isNotCompitable?: boolean;
 }
+
+// TODO: Change stack schema to be just the name of the stack and the order -The Front End will handle the image and type and isNotCompitable issues-
+// TODO: Make enums of the available stack names

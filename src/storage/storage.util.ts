@@ -33,7 +33,7 @@ export const bucket = getStorage().bucket();
 
 
 // Upload Function
-export const uploadFileToStorage = ({ file, fileType = 'file', folder }: UploadParams): Promise<IFile> => {
+export const uploadFileToStorage = ({ file, fileType = 'file', folder, covertToWebp = true }: UploadParams): Promise<IFile> => {
   return new Promise(async (resolve, reject) => {
     let Outputed_File: IFile | IURLFile;
 
@@ -64,7 +64,7 @@ export const uploadFileToStorage = ({ file, fileType = 'file', folder }: UploadP
     switch (fileType) {
       case "image":
         try {
-          Outputed_File = await FilterAndCompressImages(file);
+          Outputed_File = await FilterAndCompressImages({ file, covertToWebp });
         } catch (e) {
           return reject(e)
         }
