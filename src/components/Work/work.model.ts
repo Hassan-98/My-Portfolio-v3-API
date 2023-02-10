@@ -121,7 +121,7 @@ const WorkSchema = new mongoose.Schema<IWorkDocument>({
       if (field < 0) throw HttpError(400, errorMessages.NOT_VALID('order'))
     }
   }
-});
+}, { timestamps: true });
 
 
 const Model = mongoose.model<IWorkDocument>("Work", WorkSchema);

@@ -4,7 +4,6 @@ export interface IStack {
   name: string;
   image: string;
   type: StackType;
-  order: number;
   isNotCompitable?: boolean;
 }
 

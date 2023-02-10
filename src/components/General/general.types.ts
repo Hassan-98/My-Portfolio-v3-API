@@ -21,4 +21,4 @@ export interface IGeneral {
   recentStack: { stack: string; order: number }[];
 }
 
-export interface IGeneralSchema extends IGeneral, Document { }
+export interface IGeneralDocument extends IGeneral, Document { }

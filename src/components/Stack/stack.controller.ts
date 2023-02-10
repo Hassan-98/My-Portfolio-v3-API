@@ -11,8 +11,6 @@ import { bodyValidator, paramsValidator } from '../../middlewares/validation.mid
 import { Authenticated } from '../Auth/auth.middleware';
 //= Validations
 import { IDSchema, StackSchema } from './stack.validation';
-//= Types
-import { IStack } from './stack.types';
 
 const Service = new StackService();
 

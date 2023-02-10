@@ -7,7 +7,7 @@ export const GeneralSchema = z.object({
   header: z.object({
     jobTitle: z.string().trim(),
     descriptionText: z.string().min(10),
-    pictureUrl: z.string().url(),
+    pictureUrl: z.string().url().optional(),
   }),
   intro: z.object({
     experienceYears: z.number().gt(0),

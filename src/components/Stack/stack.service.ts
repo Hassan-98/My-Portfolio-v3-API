@@ -7,13 +7,9 @@ import checkObjectId from '../../utils/checkObjectId';
 import { uploadFileToStorage } from '../../storage/storage.util';
 //= Middlwares
 import { HttpError } from '../../middlewares/error.handler.middleware';
-//= Config
-import ConfigVars from '../../configs/app.config';
 //= Types
 import { IStack, IStackDocument } from './stack.types';
 import type { QueryParams } from '../../utils/queryBuilder';
-
-const Config = ConfigVars();
 
 class StackService {
   public MODEL: IStackModel = STACK;

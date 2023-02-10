@@ -6,13 +6,10 @@ import queryBuilder from '../../utils/queryBuilder';
 import errorMessages from '../../utils/error-messages';
 //= Middlwares
 import { HttpError } from '../../middlewares/error.handler.middleware';
-//= Config
-import ConfigVars from '../../configs/app.config';
 //= Types
 import { IWork, IWorkDocument } from './work.types';
 import type { QueryParams } from '../../utils/queryBuilder';
 
-const Config = ConfigVars();
 
 class WorkService {
   public MODEL: IWorkModel = WORK;

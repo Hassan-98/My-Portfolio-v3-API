@@ -15,6 +15,7 @@ import './components/User/user.controller';
 import './components/General/general.controller';
 import './components/Work/work.controller';
 import './components/Stack/stack.controller';
+import './components/Contact/contact.controller';
 import './components/Logs/log.controller';
 //= Migration
 import migrateGeneralSettings from './components/General/general.migration';

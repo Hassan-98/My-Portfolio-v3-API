@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
-import { IGeneral, IGeneralSchema } from './general.types';
+import { IGeneral, IGeneralDocument } from './general.types';
 import { HttpError } from '../../middlewares/error.handler.middleware';
 import errorMessages from '../../utils/error-messages';
 
-const GeneralSchema = new mongoose.Schema<IGeneralSchema>({
+const GeneralSchema = new mongoose.Schema<IGeneralDocument>({
   header: {
     jobTitle: {
       type: String,

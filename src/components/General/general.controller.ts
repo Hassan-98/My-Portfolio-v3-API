@@ -1,16 +1,16 @@
 //= Modules
 import { Request, Response } from 'express';
 //= Decorators
-import { Controller, Get, Post, Patch, Delete, Use } from '../../decorators';
+import { Controller, Get, Patch, Use } from '../../decorators';
 //= Service
 import GeneralService from './general.service';
+//= Utils
+import { multer } from '../../storage/storage.util';
 //= Middlewares
-import { bodyValidator, paramsValidator } from '../../middlewares/validation.middleware';
+import { bodyValidator } from '../../middlewares/validation.middleware';
 import { Authenticated } from '../Auth/auth.middleware';
 //= Validations
-// import { GeneralSchema } from './general.validation';
-//= Types
-import { IGeneral } from './general.types';
+import { GeneralSchema } from './general.validation';
 
 const Service = new GeneralService();
 
@@ -20,6 +20,15 @@ class GeneralController {
   public async getGeneralSettings(req: Request, res: Response) {
     const generalSettings = await Service.getGeneralSettings();
     res.status(200).json({ success: true, data: generalSettings });
+  };
+
+  @Patch('/')
+  @Use(Authenticated)
+  @Use(multer.single('picture'))
+  @Use(bodyValidator(GeneralSchema.partial(), ['header', 'intro', 'links', 'recentStack']))
+  public async updateSettings(req: Request, res: Response) {
+    const settings = await Service.updateSettings(req.body, req.file);
+    res.status(200).json({ success: true, data: settings });
   };
 }
 

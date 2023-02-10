@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
-import { IStack, IStackDocument } from './stack.types';
+import { IStack, IStackDocument, StackType } from './stack.types';
 import { HttpError } from '../../middlewares/error.handler.middleware';
 import errorMessages from '../../utils/error-messages';
 
@@ -22,7 +22,7 @@ const StackSchema = new mongoose.Schema<IStackDocument>({
   },
   type: {
     type: String,
-    enum: ['front', 'back', 'tools', 'front back'],
+    enum: [StackType.front, StackType.back, StackType.tools, StackType.full],
     validate(field: string) {
       if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('type'))
     }
