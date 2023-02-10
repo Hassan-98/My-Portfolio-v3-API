@@ -1,5 +1,6 @@
 //= Models
 import USER, { UserModel } from './user.model';
+import CryptoJS from 'crypto-js';
 //= Utils
 import queryBuilder from '../../utils/queryBuilder';
 import errorMessages from '../../utils/error-messages';
@@ -19,17 +20,17 @@ class UserService {
     const { limit, skip } = params || {};
     const { filter, projection, population, sortition } = queryBuilder(params || {});
 
-    let users: User[] = await this.MODEL.find(filter, projection, { ...population, ...sortition, ...(limit ? { limit } : {}), ...(skip ? { skip } : {}) }).lean();
+    let users: User[] = await this.MODEL.find(filter, { password: 0, ...projection }, { ...population, ...sortition, ...(limit ? { limit } : {}), ...(skip ? { skip } : {}) }).lean();
     return users;
   }
 
   public async getUserById(id: string): Promise<User> {
-    let user: User = await this.MODEL.findById(id).lean();
+    let user: User = await this.MODEL.findById(id, { password: 0 }).lean();
     return user;
   }
 
   public async getUserByEmail(email: string): Promise<User> {
-    let user: User = await this.MODEL.findOne({ email }).lean();
+    let user: User = await this.MODEL.findOne({ email }, { password: 0 }).lean();
     return user;
   }
 
@@ -49,7 +50,8 @@ class UserService {
   }
 
   public async updateUserData(id: string, updates: Partial<Exclude<User, 'password'>>): Promise<User | null> {
-    const user: User = await this.MODEL.findByIdAndUpdate(id, updates, { new: true, runValidators: true }).lean();
+    if (updates.password) throw HttpError(400, errorMessages.CANNOT_BE_UPDATED('password'));
+    const user: User = await this.MODEL.findByIdAndUpdate(id, updates, { new: true, runValidators: true, select: { password: 0 } }).lean();
     return user;
   }
 }

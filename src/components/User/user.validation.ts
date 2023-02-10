@@ -29,8 +29,12 @@ export const IDSchema = z.object({
   id: z.string().refine((val) => checkObjectId(val), { message: "must be a valid id" })
 });
 
+export const EmailSchema = z.object({
+  email: z.string().email()
+});
+
 export const UpdatePasswordSchema = z.object({
-  currentPassword: z.string().min(6),
+  currentPassword: z.string().min(6).optional(),
   newPassword: z.string().min(6, { message: "Password must be 6 or more characters long" })
 });
 

@@ -6,6 +6,7 @@ const errorMessages = {
   NOT_VALID_URL: (field: string): string => `(${field}) field value is not a valid URL`,
   TOO_SHORT: (field: string, min?: number): string => `The value of (${field}) field is too short, minimum value is ${min} chars`,
   USER_NOT_FOUND: (id: string): string => `User with ID:(${id}) is not found in our database`,
+  CANNOT_BE_UPDATED: (field: string): string => `Field (${field}) cannot be updated`,
   AUTH_REQUIRED: `Authentication is required for performing this operation`,
   ALREADY_AUTHENTICATED: `You are already authenticated`,
   INVALID_CREDENTIALS: `Your credentials is invalid, please try again`,
