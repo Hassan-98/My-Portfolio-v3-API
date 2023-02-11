@@ -8,7 +8,7 @@ export default function asyncHandler(controller: string, requestHandler: Request
       const status: number = err.status || 500;
       const message: string = err.message || 'Something went wrong';
 
-      console.error(`Error occurred in -> ${controller}`);
+      console.error(`Error occurred in -> ${req.method.toUpperCase()} ${controller}`);
       console.error('\n\x1b[31m%s\x1b[0m\n', message);
       console.error(err.stack);
 
