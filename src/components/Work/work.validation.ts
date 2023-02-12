@@ -11,6 +11,7 @@ export const WorkSchema = z.object({
   description: z.string().trim().min(15),
   stackType: z.nativeEnum(StackType),
   importance: z.nativeEnum(Importance),
+  showInCv: z.boolean(),
   links: z.object({
     github: z.string().url().optional(),
     demo: z.string().url().optional(),

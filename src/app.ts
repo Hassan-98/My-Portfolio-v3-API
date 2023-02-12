@@ -9,17 +9,7 @@ import logger from 'morgan';
 import cors, { CorsOptions, CorsRequest } from 'cors';
 //= Router
 import { AppRouter } from './router/AppRouter';
-import './components/Root/root.controller';
-import './components/Auth/auth.controller';
-import './components/User/user.controller';
-import './components/General/general.controller';
-import './components/Work/work.controller';
-import './components/Experience/experience.controller';
-import './components/Skills/skills.controller';
-import './components/Testimonials/testimonials.controller';
-import './components/Stack/stack.controller';
-import './components/Contact/contact.controller';
-import './components/Logs/log.controller';
+import './router/Routes';
 //= Migrations
 import migrateGeneralSettings from './components/General/general.migration';
 import migrateStacks from './components/Stack/stack.migration';
