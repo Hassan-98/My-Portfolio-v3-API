@@ -14,6 +14,7 @@ import './router/Routes';
 import migrateGeneralSettings from './components/General/general.migration';
 import migrateStacks from './components/Stack/stack.migration';
 import migrateSkills from './components/Skills/skills.migration';
+import migrateResumePreferences from './components/Resume/resume.migration';
 //= Database Configurations
 import { databaseConfig } from './configs/db.config';
 
@@ -44,6 +45,7 @@ class App {
     await migrateStacks();
     await migrateGeneralSettings();
     await migrateSkills();
+    await migrateResumePreferences();
   }
 
   private initializeMiddlewares() {
