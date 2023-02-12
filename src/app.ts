@@ -15,12 +15,14 @@ import './components/User/user.controller';
 import './components/General/general.controller';
 import './components/Work/work.controller';
 import './components/Experience/experience.controller';
+import './components/Skills/skills.controller';
 import './components/Stack/stack.controller';
 import './components/Contact/contact.controller';
 import './components/Logs/log.controller';
 //= Migrations
 import migrateGeneralSettings from './components/General/general.migration';
 import migrateStacks from './components/Stack/stack.migration';
+import migrateSkills from './components/Skills/skills.migration';
 //= Database Configurations
 import { databaseConfig } from './configs/db.config';
 
@@ -50,6 +52,7 @@ class App {
   private async initMigrations() {
     await migrateStacks();
     await migrateGeneralSettings();
+    await migrateSkills();
   }
 
   private initializeMiddlewares() {

@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 
 export interface IGeneral {
   header: {
@@ -18,7 +18,7 @@ export interface IGeneral {
     linkedin: string;
     twitter: string;
   };
-  recentStack: { stack: string; order: number }[];
+  recentStack: { stack: ObjectId; order: number }[];
 }
 
 export interface IGeneralDocument extends IGeneral, Document { }

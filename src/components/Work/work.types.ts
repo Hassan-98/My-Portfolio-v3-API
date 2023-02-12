@@ -1,6 +1,6 @@
-import { Document } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 //= Types
-import { StackType, Stack } from '../../types';
+import { StackType } from '../../types';
 
 export enum Importance {
   Glowing = "glowing",
@@ -23,7 +23,7 @@ export interface IWork {
     desktop: string;
     mobile: string;
   };
-  stack: { stack: string; order: number }[];
+  stack: { stack: ObjectId; order: number }[];
   order: number;
 }
 
