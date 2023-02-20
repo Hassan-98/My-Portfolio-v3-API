@@ -44,13 +44,11 @@ class UserController {
     res.status(200).json({ success: true, data: user });
   };
 
-  @Patch('/:id/password')
+  @Patch('/password')
   @Use(Authenticated)
-  @Use(paramsValidator(IDSchema))
   @Use(bodyValidator(UpdatePasswordSchema))
   public async updateUserPassword(req: Request, res: Response) {
     const providedData = {
-      id: req.params.id,
       currentPassword: req.body.currentPassword,
       newPassword: req.body.newPassword
     };

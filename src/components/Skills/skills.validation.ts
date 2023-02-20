@@ -13,6 +13,16 @@ export const SkillSchema = z.object({
   order: z.number().gt(0)
 });
 
+export const SkillsByTypeSchema = z.object({
+  skills: z.array(z.object({
+    skill: z.string().refine((val) => checkObjectId(val), { message: "must be a valid id" }),
+    mastery: z.nativeEnum(SkillMastery),
+    type: z.nativeEnum(StackType),
+    order: z.number().gt(0)
+  })),
+  type: z.nativeEnum(StackType)
+})
+
 export const IDSchema = z.object({
   id: z.string().refine((val) => checkObjectId(val), { message: "must be a valid id" })
 });

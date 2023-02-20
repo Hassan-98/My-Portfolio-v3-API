@@ -21,6 +21,8 @@ class GeneralService {
 
     if (!settings) throw HttpError(400, errorMessages.NOT_EXIST("general settings"));
 
+    const oldImage = settings.header.pictureUrl;
+
     Object.keys(updates).forEach((key) => {
       if (settings) settings.set(key, updates[key as keyof IGeneral]);
     });
@@ -28,6 +30,8 @@ class GeneralService {
     if (picture) {
       let uploadedImage = await uploadFileToStorage({ file: picture, fileType: 'image', folder: 'general settings' });
       settings.header.pictureUrl = uploadedImage.url;
+    } else if (updates.header) {
+      settings.header.pictureUrl = oldImage;
     }
 
     await settings.save();

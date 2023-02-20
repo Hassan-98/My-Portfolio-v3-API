@@ -18,7 +18,7 @@ export default async function migrateStacks() {
       {
         name: "Ant Design",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Fant-design.svg?alt=media&token=8484c824-6bbb-4f00-b3ce-835b32146dc4",
-        notCompitable: true,
+        isNotCompitable: true,
         type: StackType.front
       },
       {
@@ -29,7 +29,7 @@ export default async function migrateStacks() {
       {
         name: "Chakra UI",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Fchakra-ui.svg?alt=media&token=2e81563f-f187-4dc6-b47c-5f54a10bc548",
-        notCompitable: true,
+        isNotCompitable: true,
         type: StackType.front
       },
       {
@@ -70,7 +70,7 @@ export default async function migrateStacks() {
       {
         name: "Express",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Fexpress.svg?alt=media&token=bcc8eecb-fa9c-4d6a-a6d4-9f03f8bab806",
-        notCompitable: true,
+        isNotCompitable: true,
         type: StackType.back
       },
       {
@@ -137,7 +137,7 @@ export default async function migrateStacks() {
         name: "Material UI",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Fmaterial-ui.svg?alt=media&token=5fc10ed1-0599-45b9-8107-550702e738ca",
         type: StackType.front,
-        notCompitable: true
+        isNotCompitable: true
       },
       {
         name: "MongoDB",
@@ -152,7 +152,7 @@ export default async function migrateStacks() {
       {
         name: "Nestjs",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Fnestjs.svg?alt=media&token=2c916e08-d3f3-4e17-9dac-adab2c6f0776",
-        notCompitable: true,
+        isNotCompitable: true,
         type: StackType.back
       },
       {
@@ -198,7 +198,7 @@ export default async function migrateStacks() {
       {
         name: "Prisma",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Fprisma.svg?alt=media&token=be23f5d2-fd3e-4bcc-a8ba-d35fd952ab9d",
-        notCompitable: true,
+        isNotCompitable: true,
         type: StackType.back
       },
       {
@@ -214,7 +214,7 @@ export default async function migrateStacks() {
       {
         name: "React Native",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Freact-native.svg?alt=media&token=6931d074-59e0-4d7d-ae17-d4d4c574759a",
-        notCompitable: true,
+        isNotCompitable: true,
         type: StackType.front
       },
       {
@@ -235,7 +235,7 @@ export default async function migrateStacks() {
       {
         name: "Sequelize",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Fsequelize.svg?alt=media&token=e8b31f23-8efe-4ccf-a0e8-e83c558fa873",
-        notCompitable: true,
+        isNotCompitable: true,
         type: StackType.back
       },
       {
@@ -246,13 +246,13 @@ export default async function migrateStacks() {
       {
         name: "Socket IO",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Fsocket.svg?alt=media&token=e01317cd-7393-47e7-ad4b-e691f608bcba",
-        notCompitable: true,
+        isNotCompitable: true,
         type: StackType.back
       },
       {
         name: "Tailwindcss",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Ftailwindcss.svg?alt=media&token=8e4a1415-8f36-42c0-bd34-ba78d6deb99e",
-        notCompitable: true,
+        isNotCompitable: true,
         type: StackType.front
       },
       {
@@ -263,7 +263,7 @@ export default async function migrateStacks() {
       {
         name: "Vercel",
         image: "https://firebasestorage.googleapis.com/v0/b/portfolio-storage-63979.appspot.com/o/stack-logos%2Fvercel.svg?alt=media&token=336c339d-b09a-4aef-a9b5-aeb20879681d",
-        notCompitable: true,
+        isNotCompitable: true,
         type: StackType.tools
       },
       {

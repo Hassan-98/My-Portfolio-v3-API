@@ -9,6 +9,7 @@ export const ResumeSchema = z.object({
   templates: z.array(z.object({
     name: z.string().trim(),
     image: z.string().url().optional(),
+    selected: z.boolean().optional()
   })),
   links: z.object({
     showEmail: z.boolean(),

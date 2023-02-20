@@ -1,8 +1,9 @@
-import { Document, ObjectId } from 'mongoose';
+import { Document } from 'mongoose';
 
 export type Template = {
   name: string;
   image: string;
+  selected: boolean;
 }
 
 export enum CvSkillsPeriority {

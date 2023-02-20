@@ -17,6 +17,10 @@ const ResumeSchema = new mongoose.Schema<IResumeDocument>({
       validate(field: string) {
         if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('templates.image'))
       }
+    },
+    selected: {
+      type: Boolean,
+      default: false
     }
   }],
   links: {

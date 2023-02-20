@@ -46,6 +46,22 @@ class SkillService {
     return skill;
   }
 
+  public async updateSkillsByType(skills: ISkill[], type: string): Promise<boolean> {
+    const session = await mongoose.connection.startSession();
+    try {
+      session.startTransaction();
+      await this.MODEL.deleteMany({ type });
+      await this.MODEL.create(skills);
+      await session.commitTransaction();
+      session.endSession();
+      return true;
+    } catch {
+      await session.abortTransaction();
+      session.endSession();
+      return false
+    }
+  }
+
   public async updateSkill(id: string, updates: Partial<ISkill>): Promise<ISkillDocument> {
     let skill: ISkillDocument | null = await this.MODEL.findById(id);
 
@@ -60,19 +76,6 @@ class SkillService {
     await skill.save();
 
     return skill;
-  }
-
-  public async updateSkillsOrder(newOrder: { id: string, order: number }[]): Promise<boolean> {
-    const writes = newOrder.map(Order => ({
-      updateOne: {
-        filter: { _id: Order.id },
-        update: { $set: { order: Order.order } }
-      }
-    }));
-
-    await this.MODEL.bulkWrite(writes);
-
-    return true;
   }
 
   public async deleteASkill(id: string): Promise<boolean> {

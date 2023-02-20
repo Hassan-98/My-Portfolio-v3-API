@@ -66,7 +66,7 @@ export default async function migrateSkills() {
         order: 9
       },
       {
-        skill: stacks.find(stack => stack.name === "Nextjs")?._id,
+        skill: stacks.find(stack => stack.name === "Next.js")?._id,
         mastery: SkillMastery.Proficient,
         type: StackType.front,
         order: 10
@@ -150,7 +150,7 @@ export default async function migrateSkills() {
         order: 1
       },
       {
-        skill: stacks.find(stack => stack.name === "GitHub")?._id,
+        skill: stacks.find(stack => stack.name === "Github")?._id,
         mastery: SkillMastery.Proficient,
         type: StackType.tools,
         order: 2

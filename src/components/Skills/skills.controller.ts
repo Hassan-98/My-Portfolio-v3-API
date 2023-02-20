@@ -8,7 +8,7 @@ import SkillService from './skills.service';
 import { bodyValidator, paramsValidator } from '../../middlewares/validation.middleware';
 import { Authenticated } from '../Auth/auth.middleware';
 //= Validations
-import { IDSchema, SkillSchema, OrderSchema } from './skills.validation';
+import { IDSchema, SkillSchema, SkillsByTypeSchema, OrderSchema } from './skills.validation';
 
 const Service = new SkillService();
 
@@ -29,16 +29,16 @@ class SkillController {
   @Post('/')
   @Use(Authenticated)
   @Use(bodyValidator(SkillSchema))
-  public async addNewWork(req: Request, res: Response) {
+  public async addNewSkill(req: Request, res: Response) {
     const skill = await Service.addNewSkill(req.body);
     res.status(201).json({ success: true, data: skill });
   };
 
-  @Patch('/order')
+  @Patch('/type')
   @Use(Authenticated)
-  @Use(bodyValidator(OrderSchema))
-  public async updateWorkOrder(req: Request, res: Response) {
-    await Service.updateSkillsOrder(req.body);
+  @Use(bodyValidator(SkillsByTypeSchema))
+  public async updateSkillsByType(req: Request, res: Response) {
+    await Service.updateSkillsByType(req.body.skills, req.body.type);
     res.status(200).json({ success: true, data: null });
   };
 

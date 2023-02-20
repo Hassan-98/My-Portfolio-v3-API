@@ -25,7 +25,7 @@ class GeneralController {
   @Patch('/')
   @Use(Authenticated)
   @Use(multer.single('picture'))
-  @Use(bodyValidator(GeneralSchema.partial(), ['header', 'intro', 'links', 'recentStack']))
+  @Use(bodyValidator(GeneralSchema.partial(), ['header']))
   public async updateSettings(req: Request, res: Response) {
     const settings = await Service.updateSettings(req.body, req.file);
     res.status(200).json({ success: true, data: settings });

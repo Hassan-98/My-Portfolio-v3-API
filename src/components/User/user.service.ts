@@ -34,8 +34,8 @@ class UserService {
     return user;
   }
 
-  public async updateUserPassword({ id, currentPassword, newPassword }: { id: string, currentPassword: string, newPassword: string }): Promise<User | null> {
-    const user: User | null = await this.MODEL.findById(id, { email: 1, password: 1 });
+  public async updateUserPassword({ currentPassword, newPassword }: { currentPassword: string, newPassword: string }): Promise<User | null> {
+    const user: User | null = await this.MODEL.findOne({}, { email: 1, password: 1 });
     if (!user) throw HttpError(422, errorMessages.INVALID_CREDENTIALS);
 
     if (user.password !== 'not-linked') {
