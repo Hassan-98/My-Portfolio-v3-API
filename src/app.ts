@@ -57,7 +57,7 @@ class App {
       // Helmet Protect
       this.app.use(helmet());
       // Cross-Origin Resource Sharing
-      this.app.use(cors(this.corsOptionsDelegate));
+      this.app.use(cors({ origin: true, credentials: true }));
     } else {
       this.app.use(cors({ origin: true, credentials: true }));
     }
