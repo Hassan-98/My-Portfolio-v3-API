@@ -73,7 +73,9 @@ class AuthController {
   @Post('/logout')
   @Use(Authenticated)
   public logout(_: Request, res: Response) {
-    res.clearCookie('login-session').status(200).json({ success: true, data: null });
+    res.clearCookie('login-session', {
+      ...(process.env.NODE_ENV === 'development' ? {} : { domain: ".hassanali.tk" }),
+    }).status(200).json({ success: true, data: null });
   };
 }
 
