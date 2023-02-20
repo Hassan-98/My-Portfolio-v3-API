@@ -11,4 +11,3 @@ import '../components/Testimonials/testimonials.controller';
 import '../components/Resume/resume.controller';
 import '../components/Stack/stack.controller';
 import '../components/Contact/contact.controller';
-import '../components/Logs/log.controller';
