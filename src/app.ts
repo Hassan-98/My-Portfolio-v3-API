@@ -78,9 +78,10 @@ class App {
   }
 
   private corsOptionsDelegate(req: CorsRequest, callback: (err: Error | null, options?: CorsOptions) => void): void {
-    var corsOptions;
+    let corsOptions;
+    let domains = process.env.WHITELISTED_DOMAINS?.split('|') || [''];
 
-    if (this.whitelistedDomains.indexOf(req.headers.origin as string) > -1) corsOptions = {
+    if (domains.indexOf(req.headers.origin as string) > -1) corsOptions = {
       origin: true,
       credentials: true,
     }
