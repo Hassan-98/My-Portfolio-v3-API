@@ -9,7 +9,6 @@
     "lint": "eslint",
     "clean": "rm -rf dist/ || rmdir /s /q dist",
     "dev": "nodemon src/index.ts --watch \"src/**/*.{ts,tsx}\" -e ts,tsx",
-    "prebuild": "npm run lint && npm run format",
     "build": "npm run compile",
     "start": "node dist/index.js",
     "pretest": "npm run clean && npm run compile",
