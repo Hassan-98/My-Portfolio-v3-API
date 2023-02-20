@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 //= Models
 import CERTIFICATE, { ICertificateModel } from './certificates.model';
 //= Utils
@@ -17,8 +18,6 @@ class CertificateService {
   public async getAllCertificates(params?: QueryParams): Promise<ICertificate[]> {
     const { limit, skip } = params || {};
     const { filter, projection, population, sortition } = queryBuilder(params || {});
-
-    console.log(population);
 
     let certificates: ICertificate[] = await this.MODEL.find(filter, projection, { ...population, ...sortition, ...(limit ? { limit } : {}), ...(skip ? { skip } : {}) }).lean();
 
@@ -46,7 +45,13 @@ class CertificateService {
       data.image = Image.url;
     }
 
-    const certificate = await this.MODEL.create(data);
+    await this.MODEL.updateMany({}, {
+      $inc: {
+        order: 1
+      }
+    });
+    const certificate = await this.MODEL.create(data)
+
     return certificate;
   }
 

@@ -5,13 +5,13 @@ import checkObjectId from '../../utils/checkObjectId';
 
 export const GeneralSchema = z.object({
   header: z.object({
-    jobTitle: z.string().trim(),
+    jobTitle: z.string(),
     descriptionText: z.string().min(10),
     pictureUrl: z.string().url().optional(),
   }),
   intro: z.object({
     experienceYears: z.number().gt(0),
-    jobTitle: z.string().trim(),
+    jobTitle: z.string(),
     aboutMe: z.string().min(10),
   }),
   links: z.object({

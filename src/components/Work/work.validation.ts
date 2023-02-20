@@ -7,8 +7,8 @@ import { StackType } from '../../types';
 import { Importance } from './work.types';
 
 export const WorkSchema = z.object({
-  name: z.string().trim(),
-  description: z.string().trim().min(15),
+  name: z.string(),
+  description: z.string().min(15),
   stackType: z.nativeEnum(StackType),
   importance: z.nativeEnum(Importance),
   showInCv: z.boolean(),

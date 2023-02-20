@@ -15,7 +15,7 @@ export default function queryBuilder(query: QueryParams) {
   if (query.sort) {
     sortition = { sort: {} };
     //?sort=price,-createdAt
-    query.sort.split(",").map((item: string) => item.trim()).forEach((item: string) => {
+    query.sort.split(",").map((item: string) => item).forEach((item: string) => {
       if (item.startsWith('-')) return sortition.sort[item.substring(1)] = -1;
       sortition.sort[item] = 1;
     });
@@ -28,7 +28,7 @@ export default function queryBuilder(query: QueryParams) {
 
   if (query.populate && query.populate.length) {
     // ?populate=user(username-email-books)$books(title),books$author,images
-    query.populate.split(",").map((item: string) => item.trim()).forEach((field: string) => {
+    query.populate.split(",").map((item: string) => item).forEach((field: string) => {
       let path: string;
       let mainSelects: string | undefined;
       let deepPopulate: { path: string; select?: string; } | undefined;
@@ -76,7 +76,7 @@ export default function queryBuilder(query: QueryParams) {
   if (query.select) {
     projection = {};
     // ?select=createdAt,title || ?select=-content
-    let selections = query.select.split(",").map((item: string) => item.trim());
+    let selections = query.select.split(",").map((item: string) => item);
     selections.forEach((item: string) => {
       if (item.startsWith('-')) return projection[item.substring(1)] = 0;
       projection[item] = 1;
@@ -116,7 +116,7 @@ export default function queryBuilder(query: QueryParams) {
       // ?tags=[apple,android]
       let value = query[key].replace('[', '').replace(']', '');
       let array: string[] = [];
-      value.split(',').forEach((val: string) => array.push(val.trim()));
+      value.split(',').forEach((val: string) => array.push(val));
       filter[key] = { $in: array };
     }
 

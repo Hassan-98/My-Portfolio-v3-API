@@ -47,19 +47,9 @@ class SkillService {
   }
 
   public async updateSkillsByType(skills: ISkill[], type: string): Promise<boolean> {
-    const session = await mongoose.connection.startSession();
-    try {
-      session.startTransaction();
-      await this.MODEL.deleteMany({ type });
-      await this.MODEL.create(skills);
-      await session.commitTransaction();
-      session.endSession();
-      return true;
-    } catch {
-      await session.abortTransaction();
-      session.endSession();
-      return false
-    }
+    await this.MODEL.deleteMany({ type });
+    await this.MODEL.create(skills);
+    return true;
   }
 
   public async updateSkill(id: string, updates: Partial<ISkill>): Promise<ISkillDocument> {

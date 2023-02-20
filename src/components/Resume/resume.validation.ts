@@ -7,7 +7,7 @@ import { CvSkillsPeriority } from './resume.types';
 
 export const ResumeSchema = z.object({
   templates: z.array(z.object({
-    name: z.string().trim(),
+    name: z.string(),
     image: z.string().url().optional(),
     selected: z.boolean().optional()
   })),

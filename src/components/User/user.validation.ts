@@ -4,8 +4,8 @@ import { z } from 'zod';
 import checkObjectId from '../../utils/checkObjectId';
 
 export const UserSchema = z.object({
-  username: z.string().trim(),
-  email: z.string().trim().email({ message: "Email Address is invalid" }),
+  username: z.string(),
+  email: z.string().email({ message: "Email Address is invalid" }),
   password: z.string().min(6, { message: "Password must be 6 or more characters long" }),
   picture: z.string().url().optional(),
   externalAuth: z.object({

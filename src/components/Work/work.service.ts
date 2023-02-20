@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 //= Models
 import WORK, { IWorkModel } from './work.model';
 //= Utils
@@ -54,7 +55,13 @@ class WorkService {
       };
     }
 
+    await this.MODEL.updateMany({}, {
+      $inc: {
+        order: 1
+      }
+    });
     const work = await this.MODEL.create(data);
+
     return work;
   }
 

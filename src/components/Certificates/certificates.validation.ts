@@ -4,9 +4,9 @@ import { z } from 'zod';
 import checkObjectId from '../../utils/checkObjectId';
 
 export const CertificateSchema = z.object({
-  title: z.string().trim(),
+  title: z.string(),
   issuanceDate: z.coerce.date(),
-  description: z.string().trim().min(15),
+  description: z.string().min(15),
   image: z.string().url().optional(),
   showInCv: z.boolean(),
   order: z.number().gt(0),
