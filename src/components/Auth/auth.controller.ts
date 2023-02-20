@@ -33,7 +33,7 @@ class AuthController {
       secure: Config.isProduction,
       httpOnly: true,
       signed: true,
-      ...(process.env.NODE_ENV === 'development' ? {} : { domain: "test-admin.hassanali.tk" }),
+      ...(process.env.NODE_ENV === 'development' ? {} : { domain: ".hassanali.tk" }),
       expires: new Date(new Date().getTime() + 60 * 60 * 1000)
     }).status(200).json({ success: true, data: userData });
   };
@@ -52,7 +52,7 @@ class AuthController {
       secure: Config.isProduction,
       httpOnly: true,
       signed: true,
-      ...(process.env.NODE_ENV === 'development' ? {} : { domain: "test-admin.hassanali.tk" }),
+      ...(process.env.NODE_ENV === 'development' ? {} : { domain: ".hassanali.tk" }),
       expires: new Date(new Date().getTime() + 1 * 60 * 60 * 1000)
     })
       .status(status === 'login' ? 200 : 201)
