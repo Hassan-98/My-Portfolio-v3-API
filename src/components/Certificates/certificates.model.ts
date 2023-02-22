@@ -25,6 +25,22 @@ const CertificateSchema = new mongoose.Schema<ICertificateDocument>({
     type: Date,
     required: [true, errorMessages.REQUIRED('issuanceDate')]
   },
+  issuanceSource: {
+    type: String,
+    trim: true,
+    required: [true, errorMessages.REQUIRED('issuanceSource')],
+    validate(field: string) {
+      if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('issuanceSource'))
+    }
+  },
+  sourceLink: {
+    type: String,
+    trim: true,
+    validate(field: string) {
+      if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('sourceLink'))
+      else if (!validator.isURL(field)) throw HttpError(400, errorMessages.NOT_VALID('sourceLink'))
+    }
+  },
   image: {
     type: String,
     trim: true,
@@ -33,6 +49,10 @@ const CertificateSchema = new mongoose.Schema<ICertificateDocument>({
       if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('image'));
       else if (!validator.isURL(field)) throw HttpError(400, errorMessages.NOT_VALID('image'))
     }
+  },
+  showInWebsite: {
+    type: Boolean,
+    default: true
   },
   showInCv: {
     type: Boolean,

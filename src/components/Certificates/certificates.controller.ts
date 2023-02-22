@@ -32,7 +32,7 @@ class CertificatesController {
   @Post('/')
   @Use(Authenticated)
   @Use(multer.single('image'))
-  @Use(bodyValidator(CertificateSchema, ['showInCv', 'order']))
+  @Use(bodyValidator(CertificateSchema, ['showInCv', 'showInWebsite', 'order']))
   public async addNewCertificate(req: Request, res: Response) {
     const uploaded_image = req.file as Express.Multer.File;
     const certificate = await Service.addNewCertificate({ data: req.body, image: uploaded_image });
@@ -51,7 +51,7 @@ class CertificatesController {
   @Use(Authenticated)
   @Use(paramsValidator(IDSchema))
   @Use(multer.single('image'))
-  @Use(bodyValidator(CertificateSchema.partial(), ['showInCv', 'order']))
+  @Use(bodyValidator(CertificateSchema.partial(), ['showInCv', 'showInWebsite', 'order']))
   public async updateCertificate(req: Request, res: Response) {
     const uploaded_image = req.file as Express.Multer.File;
     const certificate = await Service.updateCertificate(req.params.id, req.body, uploaded_image);

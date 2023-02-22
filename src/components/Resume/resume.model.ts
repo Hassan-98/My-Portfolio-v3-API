@@ -54,9 +54,19 @@ const ResumeSchema = new mongoose.Schema<IResumeDocument>({
       type: Boolean,
       default: true
     },
+    enableCustomSummary: {
+      type: Boolean,
+      default: false
+    },
+    customSummary: {
+      type: String,
+      validate(field: string) {
+        if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('summary.customSummary'))
+      }
+    },
     enableCustomTitle: {
       type: Boolean,
-      default: true
+      default: false
     },
     customTitle: {
       type: String,

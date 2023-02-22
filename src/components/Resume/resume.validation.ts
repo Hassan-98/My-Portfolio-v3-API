@@ -21,6 +21,8 @@ export const ResumeSchema = z.object({
   summary: z.object({
     showSection: z.boolean(),
     showPicture: z.boolean(),
+    enableCustomSummary: z.boolean(),
+    customSummary: z.string().optional(),
     enableCustomTitle: z.boolean(),
     customTitle: z.string().optional()
   }),

@@ -23,6 +23,8 @@ export interface IResume {
   summary: {
     showSection: boolean;
     showPicture: boolean;
+    enableCustomSummary: boolean;
+    customSummary?: string;
     enableCustomTitle: boolean;
     customTitle?: string;
   };

@@ -19,7 +19,7 @@ class RootController {
   }
 
 
-  @Post('/generate-cv')
+  @Post('/hassan-cv')
   async generateCv(req: Request, res: Response): Promise<void> {
     const pdf = await generatePDF();
     res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdf.length })

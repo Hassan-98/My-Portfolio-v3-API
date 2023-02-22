@@ -25,6 +25,8 @@ export default async function migrateResumePreferences() {
       summary: {
         showSection: true,
         showPicture: false,
+        enableCustomSummary: true,
+        customSummary: "I’m Hassan Ali, MERN Stack web developer from Egypt, Innovative Web Developer with over 1.5 years of experience inwebsite design and development. Demonstrated talent for front and back end web development to optimize onlinepresence. Expert in languages such as HTML, CSS, JavaScript and Node.js as well as React and Vue frameworks.",
         enableCustomTitle: false
       },
       skills: {
