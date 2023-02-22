@@ -60,6 +60,7 @@ class App {
 
     // Cross-Origin Resource Sharing
     this.app.use(cors({
+      origin: true,
       credentials: true
     }));
     // Cookie Parser
