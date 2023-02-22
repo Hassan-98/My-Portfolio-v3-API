@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "codebase for the server side api of my portfolio.",
   "main": "./src/index.ts",
+  "type": "module",
   "scripts": {
     "compile": "tsc",
     "format": "prettier --config .prettierrc \"**/*.{ts,tsx}\" --write",
