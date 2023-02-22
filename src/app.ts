@@ -56,12 +56,10 @@ class App {
       this.app.use(hpp());
       // Helmet Protect
       this.app.use(helmet());
-      // Cross-Origin Resource Sharing
-      this.app.use(cors({ origin: true, credentials: true }));
-    } else {
-      this.app.use(cors({ origin: true, credentials: true }));
     }
 
+    // Cross-Origin Resource Sharing
+    this.app.use(cors());
     // Cookie Parser
     this.app.use(cookieParser(process.env.COOKIE_SECRET));
     // Req & Res Compression
