@@ -62,7 +62,7 @@ class App {
     this.app.use(compression());
     // Cross-Origin Resource Sharing
     this.app.use(cors({
-      origin: true,
+      origin: process.env.WHITELISTED_DOMAINS?.split('|') || ['https://admin.hassanali.tk', 'https://hassanali.tk'],
       credentials: true
     }));
     // Cookie Parser
