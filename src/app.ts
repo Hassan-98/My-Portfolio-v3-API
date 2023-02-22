@@ -59,7 +59,9 @@ class App {
     }
 
     // Cross-Origin Resource Sharing
-    this.app.use(cors());
+    this.app.use(cors({
+      credentials: true
+    }));
     // Cookie Parser
     this.app.use(cookieParser(process.env.COOKIE_SECRET));
     // Req & Res Compression
