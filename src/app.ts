@@ -58,6 +58,8 @@ class App {
       this.app.use(helmet());
     }
 
+    // Req & Res Compression
+    this.app.use(compression());
     // Cross-Origin Resource Sharing
     this.app.use(cors({
       origin: true,
@@ -65,8 +67,6 @@ class App {
     }));
     // Cookie Parser
     this.app.use(cookieParser(process.env.COOKIE_SECRET));
-    // Req & Res Compression
-    this.app.use(compression());
     // Set Morgan Logger
     this.app.use(logger(':method :url :status - :response-time ms'));
     // Setting JSON in Body Of Requests
