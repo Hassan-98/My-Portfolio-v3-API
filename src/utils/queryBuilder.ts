@@ -14,10 +14,15 @@ export default function queryBuilder(query: QueryParams) {
 
   if (query.sort) {
     sortition = { sort: {} };
-    //?sort=price,-createdAt
-    query.sort.split(",").map((item: string) => item).forEach((item: string) => {
-      if (item.startsWith('-')) return sortition.sort[item.substring(1)] = -1;
-      sortition.sort[item] = 1;
+    //?sort=price,-createdAt,*age,-*name
+    query.sort.split(",").forEach((item: string) => {
+      if (item.includes('*')) {
+        if (item.startsWith('-')) return sortition.sort[item.substring(2)] = { $exists: false };
+        sortition.sort[item.substring(1)] = { $exists: true };
+      } else {
+        if (item.startsWith('-')) return sortition.sort[item.substring(1)] = -1;
+        sortition.sort[item] = 1;
+      }
     });
   }
 
