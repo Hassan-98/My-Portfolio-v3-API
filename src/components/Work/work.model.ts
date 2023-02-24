@@ -40,6 +40,10 @@ const WorkSchema = new mongoose.Schema<IWorkDocument>({
       if (validator.isEmpty(field)) throw HttpError(400, errorMessages.EMPTY('importance'))
     }
   },
+  showInWebsite: {
+    type: Boolean,
+    default: true
+  },
   showInCv: {
     type: Boolean,
     default: true

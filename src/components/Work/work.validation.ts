@@ -12,6 +12,7 @@ export const WorkSchema = z.object({
   stackType: z.nativeEnum(StackType),
   importance: z.nativeEnum(Importance),
   showInCv: z.boolean(),
+  showInWebsite: z.boolean(),
   links: z.object({
     github: z.string().url().optional(),
     demo: z.string().url().optional(),
