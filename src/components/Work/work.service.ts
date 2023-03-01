@@ -19,8 +19,6 @@ class WorkService {
     const { limit, skip } = params || {};
     const { filter, projection, population, sortition } = queryBuilder(params || {});
 
-    console.log(population);
-
     let works: IWork[] = await this.MODEL.find(filter, projection, { ...population, ...sortition, ...(limit ? { limit } : {}), ...(skip ? { skip } : {}) }).lean();
 
     if (!works.length) throw HttpError(400, errorMessages.NOT_EXIST("Works"));

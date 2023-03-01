@@ -18,7 +18,6 @@ export type TokenPayload = {
 
 export const Authenticated: RequestHandler = async (req, res, next) => {
   try {
-    console.log(req.cookies);
     const JWT_Token = req.signedCookies['login-session'];
 
     if (!JWT_Token) return res.status(403).json({ success: false, data: null, message: errorMessages.AUTH_REQUIRED });
