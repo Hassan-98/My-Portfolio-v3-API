@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 //= Decorators
 import { Controller, Get, Post } from '../../decorators';
 //= Modules
-import playwright from 'playwright';
+// import playwright from 'playwright';
 
 @Controller('')
 class RootController {
@@ -27,20 +27,24 @@ class RootController {
 
   @Post('/hassan-cv')
   async generateCv(req: Request, res: Response): Promise<void> {
-    const pdf = await generatePDF();
-    res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdf.length })
-    res.send(pdf)
+    // const pdf = await generatePDF();
+    // res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdf.length })
+    res.status(500).json({
+      message: "pdf generation service stoped by the developer",
+      success: false,
+      data: null
+    })
   }
 }
 
-async function generatePDF(): Promise<Buffer> {
-  const browser = await playwright.chromium.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.goto(process.env.CLIENT_URL + '/resume', { waitUntil: 'networkidle' });
-  const pdf = await page.pdf({ format: 'a4' });
-  await browser.close();
+// async function generatePDF(): Promise<Buffer> {
+//   const browser = await playwright.chromium.launch({ headless: true });
+//   const page = await browser.newPage();
+//   await page.goto(process.env.CLIENT_URL + '/resume', { waitUntil: 'networkidle' });
+//   const pdf = await page.pdf({ format: 'a4' });
+//   await browser.close();
 
-  return pdf;
-}
+//   return pdf;
+// }
 
 export default RootController;
