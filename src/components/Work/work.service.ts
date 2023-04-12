@@ -40,25 +40,34 @@ class WorkService {
     if (!data.images) {
       if (!images) throw HttpError(400, errorMessages.REQUIRED('images'));
 
-      [desktopImage, mobileImage] = await Promise.all([
-        uploadFileToStorage({ file: images.desktop, fileType: 'image', folder: data.name }),
-        uploadFileToStorage({ file: images.mobile, fileType: 'image', folder: data.name })
-      ]);
+      try {
+        [desktopImage, mobileImage] = await Promise.all([
+          uploadFileToStorage({ file: images.desktop, fileType: 'image', folder: data.name }),
+          uploadFileToStorage({ file: images.mobile, fileType: 'image', folder: data.name })
+        ]);
 
-      data.images = {
-        desktop: desktopImage.url,
-        mobile: mobileImage.url,
-      };
+        data.images = {
+          desktop: desktopImage.url,
+          mobile: mobileImage.url,
+        };
+      } catch (error: any) {
+        console.log(error);
+        throw HttpError(400, error.message);
+      }
     }
 
-    await this.MODEL.updateMany({}, {
-      $inc: {
-        order: 1
-      }
-    });
-    const work = await this.MODEL.create(data);
-
-    return work;
+    try {
+      await this.MODEL.updateMany({}, {
+        $inc: {
+          order: 1
+        }
+      });
+      const work = await this.MODEL.create(data);
+      return work;
+    } catch (error: any) {
+      console.log(error);
+      throw HttpError(400, error.message);
+    }
   }
 
   public async updateWork(id: string, updates: Partial<IWork>, images?: { desktop?: Express.Multer.File, mobile?: Express.Multer.File }): Promise<IWorkDocument> {
