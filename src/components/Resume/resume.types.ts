@@ -48,6 +48,7 @@ export interface IResume {
   projects: {
     showSection: boolean;
     isLimited: boolean;
+    showTcgWorks: boolean;
     limit?: number;
   };
 }

@@ -13,6 +13,7 @@ export const WorkSchema = z.object({
   importance: z.nativeEnum(Importance),
   showInCv: z.boolean(),
   showInWebsite: z.boolean(),
+  isTcgWork: z.boolean(),
   links: z.object({
     github: z.string().url().optional(),
     demo: z.string().url().optional(),

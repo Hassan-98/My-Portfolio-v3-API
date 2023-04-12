@@ -41,6 +41,7 @@ export const ResumeSchema = z.object({
   education: z.object({
     showSection: z.boolean(),
     isLimited: z.boolean(),
+    showTcgWorks: z.boolean(),
     limit: z.number().gt(0).optional()
   }),
   projects: z.object({

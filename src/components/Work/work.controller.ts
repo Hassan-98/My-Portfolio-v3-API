@@ -32,7 +32,7 @@ class WorksController {
   @Post('/')
   @Use(Authenticated)
   @Use(multer.fields([{ name: "desktop", maxCount: 1 }, { name: "mobile", maxCount: 1 }]))
-  @Use(bodyValidator(WorkSchema, ['stack', 'links', 'order', 'showInCv', 'showInWebsite']))
+  @Use(bodyValidator(WorkSchema, ['stack', 'links', 'order', 'showInCv', 'showInWebsite', 'isTcgWork']))
   public async addNewWork(req: Request, res: Response) {
     const uploaded_images = req.files as { [fieldname: string]: Express.Multer.File[] };
 
@@ -57,7 +57,7 @@ class WorksController {
   @Use(Authenticated)
   @Use(paramsValidator(IDSchema))
   @Use(multer.fields([{ name: "desktop", maxCount: 1 }, { name: "mobile", maxCount: 1 }]))
-  @Use(bodyValidator(WorkSchema.partial(), ['stack', 'links', 'order', 'showInCv', 'showInWebsite']))
+  @Use(bodyValidator(WorkSchema.partial(), ['stack', 'links', 'order', 'showInCv', 'showInWebsite', 'isTcgWork']))
   public async updateWork(req: Request, res: Response) {
     const uploaded_images = req.files as { [fieldname: string]: Express.Multer.File[] };
     let images;

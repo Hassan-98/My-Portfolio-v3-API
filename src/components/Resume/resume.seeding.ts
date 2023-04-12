@@ -49,6 +49,7 @@ export default async function migrateResumePreferences() {
       projects: {
         showSection: true,
         isLimited: true,
+        showTcgWorks: true,
         limit: 6
       }
     });

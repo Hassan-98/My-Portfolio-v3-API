@@ -10,11 +10,11 @@ import cors, { CorsOptions, CorsRequest } from 'cors';
 //= Router
 import { AppRouter } from './router/AppRouter';
 import './router/Routes';
-//= Migrations
-import migrateGeneralSettings from './components/General/general.migration';
-import migrateStacks from './components/Stack/stack.migration';
-import migrateSkills from './components/Skills/skills.migration';
-import migrateResumePreferences from './components/Resume/resume.migration';
+//= Seedings
+import seedGeneralSettings from './components/General/general.seeding';
+import seedStacks from './components/Stack/stack.seeding';
+import seedSkills from './components/Skills/skills.seeding';
+import seedResumePreferences from './components/Resume/resume.seeding';
 //= Database Configurations
 import { databaseConfig } from './configs/db.config';
 
@@ -32,20 +32,22 @@ class App {
     this.connectToDatabase();
     this.initializeMiddlewares();
     this.initializeAppRouter();
-    this.initMigrations();
+    this.initSeedings();
   }
 
   public start() {
     this.app.listen(this.port, () => {
       console.log('\x1b[32m%s\x1b[0m', `\n✅ [Server] listening at port ${this.port}`);
     });
+
+    return this.app;
   }
 
-  private async initMigrations() {
-    await migrateStacks();
-    await migrateGeneralSettings();
-    await migrateSkills();
-    await migrateResumePreferences();
+  private async initSeedings() {
+    await seedStacks();
+    await seedGeneralSettings();
+    await seedSkills();
+    await seedResumePreferences();
   }
 
   private initializeMiddlewares() {

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "lib": ["es2021", "DOM", "ESNext"],
     "module": "commonjs",
-    "target": "ES2015",
+    "target": "ES6",
     "sourceMap": true,
     "rootDir": "./src",
     "baseUrl": "./src",

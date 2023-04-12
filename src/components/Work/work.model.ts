@@ -48,6 +48,10 @@ const WorkSchema = new mongoose.Schema<IWorkDocument>({
     type: Boolean,
     default: true
   },
+  isTcgWork: {
+    type: Boolean,
+    default: false
+  },
   links: {
     github: {
       type: String,

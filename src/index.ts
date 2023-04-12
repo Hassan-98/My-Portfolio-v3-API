@@ -12,6 +12,6 @@ validateConfigVars();
 const app = new App();
 
 // Start The App
-app.start();
+const expressApp = app.start();
 
-export default app;
+export default expressApp;

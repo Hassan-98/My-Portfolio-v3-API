@@ -14,6 +14,7 @@ export interface IWork {
   importance: Importance;
   showInCv: boolean;
   showInWebsite: boolean;
+  isTcgWork: boolean;
   links: {
     github?: string;
     demo?: string;

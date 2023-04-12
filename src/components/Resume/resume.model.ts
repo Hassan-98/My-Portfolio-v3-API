@@ -138,6 +138,10 @@ const ResumeSchema = new mongoose.Schema<IResumeDocument>({
       type: Boolean,
       default: true
     },
+    showTcgWorks: {
+      type: Boolean,
+      default: true
+    },
     limit: {
       type: Number,
       validate(field: number) {
