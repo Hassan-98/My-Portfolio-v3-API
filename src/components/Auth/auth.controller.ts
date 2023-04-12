@@ -61,11 +61,9 @@ class AuthController {
 
 
   @Post('/verify')
-  @Use(bodyValidator(VerifyTokenSchema))
   public async verifyLoginToken(req: Request, res: Response) {
-    const { token } = req.body;
-    const decryptedToken = cookieParser.signedCookie(token, Config.COOKIE_SECRET) || "";
-    jwt.verify(decryptedToken, Config.JWT_SECRET);
+    const token = req.signedCookies['login-session'];
+    jwt.verify(token, Config.JWT_SECRET);
     res.status(200).json({ success: true, data: null });
   }
 
