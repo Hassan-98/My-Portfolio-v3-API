@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 //= Models
 import WORK, { IWorkModel } from './work.model';
 //= Utils

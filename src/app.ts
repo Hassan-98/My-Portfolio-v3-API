@@ -22,12 +22,15 @@ class App {
   public app: express.Application;
   public port: (string | number);
   public isProduction: boolean;
+  public isTesting: boolean;
   public whitelistedDomains: string[] = process.env.WHITELISTED_DOMAINS?.split('|') || [''];
 
   constructor() {
     this.app = express();
     this.port = process.env.PORT || 9999;
     this.isProduction = process.env.NODE_ENV === 'production' ? true : false;
+    this.isTesting = process.env.NODE_ENV === 'testing' ? true : false;
+
 
     this.connectToDatabase();
     this.initializeMiddlewares();
@@ -97,8 +100,12 @@ class App {
   private connectToDatabase() {
     const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH, MONGO_DATABASE, MONGO_DEV_DATABASE } = databaseConfig;
 
-    if (this.isProduction) {
+    if (this.isProduction && !this.isTesting) {
       mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_PATH}/${MONGO_DATABASE}?retryWrites=true&w=majority`);
+    } else if (this.isTesting && this.isProduction) {
+      mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_PATH}/${MONGO_DATABASE}-testing`);
+    } else if (this.isTesting && !this.isProduction) {
+      mongoose.connect(`mongodb://127.0.0.1:27017/${MONGO_DEV_DATABASE}-testing`);
     } else {
       mongoose.connect(`mongodb://127.0.0.1:27017/${MONGO_DEV_DATABASE}`);
     }

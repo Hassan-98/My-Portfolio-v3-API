@@ -18,7 +18,7 @@ export type TokenPayload = {
 
 export const Authenticated: RequestHandler = async (req, res, next) => {
   try {
-    const JWT_Token = req.signedCookies['login-session'];
+    const JWT_Token = req.signedCookies['portfolio-login-session'];
 
     if (!JWT_Token) return res.status(403).json({ success: false, data: null, message: errorMessages.AUTH_REQUIRED });
 
@@ -38,7 +38,7 @@ export const Authenticated: RequestHandler = async (req, res, next) => {
 
 export const NotAuthenticated: RequestHandler = (req, res, next) => {
   try {
-    const JWT_Token = req.signedCookies['login-session'];
+    const JWT_Token = req.signedCookies['portfolio-login-session'];
 
     if (!JWT_Token) return next();
 
@@ -52,7 +52,7 @@ export const NotAuthenticated: RequestHandler = (req, res, next) => {
 
 export const PassUser: RequestHandler = async (req, res, next) => {
   try {
-    const JWT_Token = req.signedCookies['login-session'];
+    const JWT_Token = req.signedCookies['portfolio-login-session'];
 
     if (!JWT_Token) return next();
 

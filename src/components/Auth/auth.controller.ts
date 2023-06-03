@@ -29,7 +29,7 @@ class AuthController {
 
     const userData = await Service.findUserById(userId);
 
-    res.cookie('login-session', token, {
+    res.cookie('portfolio-login-session', token, {
       secure: Config.isProduction,
       httpOnly: true,
       signed: true,
@@ -48,7 +48,7 @@ class AuthController {
 
     const userData = await Service.findUserById(user._id);
 
-    res.cookie('login-session', token, {
+    res.cookie('portfolio-login-session', token, {
       secure: Config.isProduction,
       httpOnly: true,
       signed: true,
@@ -62,7 +62,7 @@ class AuthController {
 
   @Post('/verify')
   public async verifyLoginToken(req: Request, res: Response) {
-    const token = req.signedCookies['login-session'];
+    const token = req.signedCookies['portfolio-login-session'];
     jwt.verify(token, Config.JWT_SECRET);
     res.status(200).json({ success: true, data: null });
   }
@@ -71,7 +71,7 @@ class AuthController {
   @Post('/logout')
   @Use(Authenticated)
   public logout(_: Request, res: Response) {
-    res.clearCookie('login-session', {
+    res.clearCookie('portfolio-login-session', {
       ...(process.env.NODE_ENV === 'development' ? {} : { domain: ".hassanali.tk" }),
     }).status(200).json({ success: true, data: null });
   };
