@@ -19,9 +19,10 @@ export type TokenPayload = {
 export const Authenticated: RequestHandler = async (req, res, next) => {
   try {
     const JWT_Token = req.signedCookies['portfolio-login-session'];
+    console.log(JWT_Token);
 
     if (!JWT_Token) return res.status(403).json({ success: false, data: null, message: errorMessages.AUTH_REQUIRED });
-
+    console.log(Config.JWT_SECRET);
     const { user: userId } = jwt.verify(JWT_Token, Config.JWT_SECRET) as TokenPayload;
 
     if (!userId) return res.status(403).json({ success: false, data: null, message: errorMessages.AUTH_REQUIRED });
