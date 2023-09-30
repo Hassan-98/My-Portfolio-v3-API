@@ -22,15 +22,21 @@ export const FilterAndCompressImages = ({ file, covertToWebp }: { file: Express.
     if (imagesWhitelistExtentions.indexOf(fileExtention.toLowerCase()) == -1) return reject("Image type is not supported");
 
     // Use Sharp to compress image
-    var compressedFile: Express.Multer.File | IURLFile = covertToWebp || fileExtention.toLowerCase() !== '.avif' ? {
-      ...file,
-      mimetype: 'image/webp',
-      buffer: await sharp(file.buffer).webp({ nearLossless: true, quality: 50, alphaQuality: 80, effort: 5 }).toBuffer()
-    } : file;
+    // var compressedFile: Express.Multer.File | IURLFile = covertToWebp || fileExtention.toLowerCase() !== '.avif' ? {
+    //   ...file,
+    //   mimetype: 'image/webp',
+    //   buffer: await sharp(file.buffer).webp({ nearLossless: true, quality: 50, alphaQuality: 80, effort: 5 }).toBuffer()
+    // } : file;
 
-    if (!compressedFile) return reject("An error occurred while uploading the file");
+    // var compressedFile: Express.Multer.File | IURLFile = covertToWebp || fileExtention.toLowerCase() !== '.avif' ? {
+    //   ...file,
+    //   mimetype: 'image/webp',
+    //   buffer: await sharp(file.buffer).webp({ nearLossless: true, quality: 50, alphaQuality: 80, effort: 5 }).toBuffer()
+    // } : file;
 
-    return resolve(compressedFile);
+    // if (!compressedFile) return reject("An error occurred while uploading the file");
+
+    return resolve(file);
   })
 }
 
