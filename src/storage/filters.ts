@@ -22,7 +22,7 @@ export const FilterAndCompressImages = ({ file, covertToWebp }: { file: Express.
     if (imagesWhitelistExtentions.indexOf(fileExtention.toLowerCase()) == -1) return reject("Image type is not supported");
 
     // Use Sharp to compress image
-    var compressedFile: Express.Multer.File | IURLFile = covertToWebp ? {
+    var compressedFile: Express.Multer.File | IURLFile = covertToWebp || fileExtention.toLowerCase() !== '.avif' ? {
       ...file,
       mimetype: 'image/webp',
       buffer: await sharp(file.buffer).webp({ nearLossless: true, quality: 50, alphaQuality: 80, effort: 5 }).toBuffer()

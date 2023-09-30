@@ -63,7 +63,6 @@ class AuthController {
   @Post('/verify')
   public async verifyLoginToken(req: Request, res: Response) {
     const token = req.signedCookies['portfolio-login-session'];
-    console.log(req.signedCookies, token);
     jwt.verify(token, Config.JWT_SECRET);
     res.status(200).json({ success: true, data: null });
   }

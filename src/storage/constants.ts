@@ -13,4 +13,4 @@ export const audioWhitelistExtentions = [".aac", ".mp3", ".mp4", ".m3u", ".ogg",
 
 export const videoWhitelistExtentions = [".mp4", ".m3u8", ".ts", ".3gp", ".avi", ".wmv", "mov"];
 
-export const imagesWhitelistExtentions = [".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif"];
+export const imagesWhitelistExtentions = [".jpg", ".jpeg", ".png", ".svg", ".webp", ".gif", '.avif'];
