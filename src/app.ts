@@ -60,7 +60,9 @@ class App {
       // HPP Protect
       this.app.use(hpp());
       // Helmet Protect
-      this.app.use(helmet());
+      this.app.use(helmet({
+        crossOriginResourcePolicy: { policy: "cross-origin" }
+      }));
     }
 
     // Req & Res Compression
