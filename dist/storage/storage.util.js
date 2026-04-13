@@ -11,63 +11,51 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteFileByPath = exports.deleteFileByURL = exports.uploadFileToStorage = exports.bucket = exports.multer = void 0;
+exports.deleteFileByPath = exports.deleteFileByURL = exports.uploadFileToStorage = exports.multer = void 0;
 //= Modules
 const multer_1 = __importDefault(require("multer"));
-const app_1 = require("firebase-admin/app");
-const storage_1 = require("firebase-admin/storage");
 //= Filters
 const filters_1 = require("./filters");
 //= Constants
 const constants_1 = require("./constants");
 //= Config
 const app_config_1 = __importDefault(require("../configs/app.config"));
+//= Storage backends
+const firebase_storage_1 = require("./firebase.storage");
+const telegram_1 = require("./telegram");
 const Config = (0, app_config_1.default)();
 exports.multer = (0, multer_1.default)({
-    storage: multer_1.default.memoryStorage()
+    storage: multer_1.default.memoryStorage(),
 });
-const serviceAccount = {
-    projectId: Config.ServiceAccount_project_id,
-    privateKey: (_a = Config.ServiceAccount_private_key) === null || _a === void 0 ? void 0 : _a.replace(/\\n/g, '\n'),
-    clientEmail: Config.ServiceAccount_client_email,
-};
-(0, app_1.initializeApp)({
-    credential: (0, app_1.cert)(serviceAccount),
-    storageBucket: `${Config.ServiceAccount_project_id}.appspot.com`
-});
-exports.bucket = (0, storage_1.getStorage)().bucket();
-// Upload Function
 const uploadFileToStorage = ({ file, fileType = 'file', folder, covertToWebp = true }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        let resolvedFileType = fileType;
         let Outputed_File;
-        // Auto-Detect File Type
-        if (!fileType) {
-            let type = file.mimetype.split("/")[0];
+        if (!resolvedFileType) {
+            const type = file.mimetype.split('/')[0];
             switch (type) {
-                case "image":
-                    fileType = "image";
+                case 'image':
+                    resolvedFileType = 'image';
                     break;
-                case "video":
-                    fileType = "video";
+                case 'video':
+                    resolvedFileType = 'video';
                     break;
-                case "audio":
-                    fileType = "audio";
+                case 'audio':
+                    resolvedFileType = 'audio';
                     break;
-                case "application":
-                    if (constants_1.documentWhitelistTypes.indexOf(file.mimetype.split("/")[1]) !== -1)
-                        fileType = "document";
+                case 'application':
+                    if (constants_1.documentWhitelistTypes.indexOf(file.mimetype.split('/')[1]) !== -1)
+                        resolvedFileType = 'document';
                     else
-                        fileType = "file";
+                        resolvedFileType = 'file';
                     break;
                 default:
-                    fileType = "file";
+                    resolvedFileType = 'file';
             }
         }
-        // Filter & Compress Based on File Type
-        switch (fileType) {
-            case "image":
+        switch (resolvedFileType) {
+            case 'image':
                 try {
                     Outputed_File = yield (0, filters_1.FilterAndCompressImages)({ file, covertToWebp });
                 }
@@ -75,7 +63,7 @@ const uploadFileToStorage = ({ file, fileType = 'file', folder, covertToWebp = t
                     return reject(e);
                 }
                 break;
-            case "video":
+            case 'video':
                 try {
                     Outputed_File = yield (0, filters_1.FilterVideos)(file);
                 }
@@ -83,7 +71,7 @@ const uploadFileToStorage = ({ file, fileType = 'file', folder, covertToWebp = t
                     return reject(e);
                 }
                 break;
-            case "audio":
+            case 'audio':
                 try {
                     Outputed_File = yield (0, filters_1.FilterAudios)(file);
                 }
@@ -91,7 +79,7 @@ const uploadFileToStorage = ({ file, fileType = 'file', folder, covertToWebp = t
                     return reject(e);
                 }
                 break;
-            case "document":
+            case 'document':
                 try {
                     Outputed_File = yield (0, filters_1.FilterDocs)(file);
                 }
@@ -99,7 +87,7 @@ const uploadFileToStorage = ({ file, fileType = 'file', folder, covertToWebp = t
                     return reject(e);
                 }
                 break;
-            case "file":
+            case 'file':
                 try {
                     Outputed_File = yield (0, filters_1.FilterFiles)(file);
                 }
@@ -108,53 +96,53 @@ const uploadFileToStorage = ({ file, fileType = 'file', folder, covertToWebp = t
                 }
                 break;
             default:
-                return reject("File is not supported");
+                return reject('File is not supported');
         }
-        let newFileName = `${fileType}_${Date.now()}`;
-        const uploadedFile = exports.bucket.file(folder ? `${fileType}s/${folder}/${newFileName}` : `${fileType}s/${newFileName}`);
-        let buffer = Outputed_File.buffer;
-        yield uploadedFile.save(buffer, {
-            contentType: Outputed_File.mimetype,
-            gzip: true
-        });
-        const [File_URL] = yield uploadedFile.getSignedUrl({
-            action: "read",
-            expires: "01-01-2100"
-        });
-        resolve({
-            name: newFileName,
-            url: File_URL,
-            path: `${fileType}s/${folder}/${newFileName}`,
-            size: Outputed_File.size
-        });
+        const newFileName = `${resolvedFileType}_${Date.now()}`;
+        const logicalPath = folder
+            ? `${resolvedFileType}s/${folder}/${newFileName}`
+            : `${resolvedFileType}s/${newFileName}`;
+        const buffer = Outputed_File.buffer;
+        try {
+            if (Config.STORAGE_PROVIDER === 'telegram') {
+                const { url, path } = yield (0, telegram_1.saveToTelegram)({
+                    buffer,
+                    mimetype: Outputed_File.mimetype,
+                    size: Outputed_File.size,
+                    newFileName,
+                    logicalPath,
+                });
+                resolve({
+                    name: newFileName,
+                    url,
+                    path,
+                    size: Outputed_File.size,
+                });
+                return;
+            }
+            const url = yield (0, firebase_storage_1.saveToFirebaseBucket)(logicalPath, buffer, Outputed_File.mimetype);
+            resolve({
+                name: newFileName,
+                url,
+                path: logicalPath,
+                size: Outputed_File.size,
+            });
+        }
+        catch (e) {
+            reject(e);
+        }
     }));
 };
 exports.uploadFileToStorage = uploadFileToStorage;
 function deleteFileByURL(fileUrl) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const fullPath = fileUrl.split("?")[0].split("/");
-            if (!fullPath)
-                throw new Error('Error occurred while extracting file path');
-            const filePath = `${fullPath.at(-3)}/${decodeURI(fullPath.at(-2))}/${fullPath.at(-1)}`;
-            yield exports.bucket.file(filePath).delete();
-            return { success: true };
-        }
-        catch (e) {
-            return { err: e.message };
-        }
+        return (0, firebase_storage_1.deleteFileByURL)(fileUrl);
     });
 }
 exports.deleteFileByURL = deleteFileByURL;
 function deleteFileByPath(filePath) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield exports.bucket.file(filePath).delete();
-            return { success: true };
-        }
-        catch (e) {
-            return { err: e.message };
-        }
+        return (0, firebase_storage_1.deleteFileByPath)(filePath);
     });
 }
 exports.deleteFileByPath = deleteFileByPath;

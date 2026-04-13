@@ -1,7 +1,5 @@
 //= Modules
-import Multer from "multer";
-import { initializeApp, cert, ServiceAccount } from 'firebase-admin/app';
-import { getStorage } from 'firebase-admin/storage';
+import Multer from 'multer';
 //= Filters
 import { FilterAndCompressImages, FilterVideos, FilterAudios, FilterDocs, FilterFiles } from './filters';
 //= Constants
@@ -10,145 +8,124 @@ import { documentWhitelistTypes } from './constants';
 import ConfigVars from '../configs/app.config';
 //= Types
 import { IFile, IURLFile, UploadParams } from './storage.types';
+//= Storage backends
+import { saveToFirebaseBucket, deleteFileByURL as firebaseDeleteByUrl, deleteFileByPath as firebaseDeleteByPath } from './firebase.storage';
+import { saveToTelegram } from './telegram';
 
 const Config = ConfigVars();
 
-
 export const multer = Multer({
-  storage: Multer.memoryStorage()
+  storage: Multer.memoryStorage(),
 });
 
-const serviceAccount: ServiceAccount = {
-  projectId: Config.ServiceAccount_project_id,
-  privateKey: Config.ServiceAccount_private_key?.replace(/\\n/g, '\n'),
-  clientEmail: Config.ServiceAccount_client_email,
-}
-
-initializeApp({
-  credential: cert(serviceAccount),
-  storageBucket: `${Config.ServiceAccount_project_id}.appspot.com`
-});
-
-export const bucket = getStorage().bucket();
-
-
-// Upload Function
 export const uploadFileToStorage = ({ file, fileType = 'file', folder, covertToWebp = true }: UploadParams): Promise<IFile> => {
   return new Promise(async (resolve, reject) => {
+    let resolvedFileType = fileType;
     let Outputed_File: IFile | IURLFile;
 
-    // Auto-Detect File Type
-    if (!fileType) {
-      let type = file.mimetype.split("/")[0];
-
+    if (!resolvedFileType) {
+      const type = file.mimetype.split('/')[0];
       switch (type) {
-        case "image":
-          fileType = "image"
+        case 'image':
+          resolvedFileType = 'image';
           break;
-        case "video":
-          fileType = "video"
+        case 'video':
+          resolvedFileType = 'video';
           break;
-        case "audio":
-          fileType = "audio"
+        case 'audio':
+          resolvedFileType = 'audio';
           break;
-        case "application":
-          if (documentWhitelistTypes.indexOf(file.mimetype.split("/")[1]) !== -1) fileType = "document";
-          else fileType = "file"
+        case 'application':
+          if (documentWhitelistTypes.indexOf(file.mimetype.split('/')[1]) !== -1) resolvedFileType = 'document';
+          else resolvedFileType = 'file';
           break;
         default:
-          fileType = "file"
+          resolvedFileType = 'file';
       }
     }
 
-    // Filter & Compress Based on File Type
-    switch (fileType) {
-      case "image":
+    switch (resolvedFileType) {
+      case 'image':
         try {
           Outputed_File = await FilterAndCompressImages({ file, covertToWebp });
         } catch (e) {
-          return reject(e)
+          return reject(e);
         }
         break;
-      case "video":
+      case 'video':
         try {
           Outputed_File = await FilterVideos(file);
         } catch (e) {
-          return reject(e)
+          return reject(e);
         }
         break;
-      case "audio":
+      case 'audio':
         try {
           Outputed_File = await FilterAudios(file);
         } catch (e) {
-          return reject(e)
+          return reject(e);
         }
         break;
-      case "document":
+      case 'document':
         try {
           Outputed_File = await FilterDocs(file);
         } catch (e) {
-          return reject(e)
+          return reject(e);
         }
         break;
-      case "file":
+      case 'file':
         try {
           Outputed_File = await FilterFiles(file);
         } catch (e) {
-          return reject(e)
+          return reject(e);
         }
         break;
-
       default:
-        return reject("File is not supported");
+        return reject('File is not supported');
     }
 
-    let newFileName = `${fileType}_${Date.now()}`;
+    const newFileName = `${resolvedFileType}_${Date.now()}`;
+    const logicalPath = folder
+      ? `${resolvedFileType}s/${folder}/${newFileName}`
+      : `${resolvedFileType}s/${newFileName}`;
 
-    const uploadedFile = bucket.file(folder ? `${fileType}s/${folder}/${newFileName}` : `${fileType}s/${newFileName}`);
+    const buffer = Outputed_File.buffer;
 
-    let buffer = Outputed_File.buffer;
+    try {
+      if (Config.STORAGE_PROVIDER === 'telegram') {
+        const { url, path } = await saveToTelegram({
+          buffer,
+          mimetype: Outputed_File.mimetype,
+          size: Outputed_File.size,
+          newFileName,
+          logicalPath,
+        });
+        resolve({
+          name: newFileName,
+          url,
+          path,
+          size: Outputed_File.size,
+        });
+        return;
+      }
 
-    await uploadedFile.save(buffer, {
-      contentType: Outputed_File.mimetype,
-      gzip: true
-    });
-
-    const [File_URL] = await uploadedFile.getSignedUrl({
-      action: "read",
-      expires: "01-01-2100"
-    });
-
-    resolve({
-      name: newFileName,
-      url: File_URL,
-      path: `${fileType}s/${folder}/${newFileName}`,
-      size: Outputed_File.size
-    });
+      const url = await saveToFirebaseBucket(logicalPath, buffer, Outputed_File.mimetype);
+      resolve({
+        name: newFileName,
+        url,
+        path: logicalPath,
+        size: Outputed_File.size,
+      });
+    } catch (e) {
+      reject(e);
+    }
   });
 };
 
 export async function deleteFileByURL(fileUrl: string) {
-  try {
-    const fullPath: string[] = fileUrl.split("?")[0].split("/");
-
-    if (!fullPath) throw new Error('Error occurred while extracting file path');
-
-    const filePath = `${fullPath.at(-3)}/${decodeURI(fullPath.at(-2) as string)}/${fullPath.at(-1)}`;
-
-    await bucket.file(filePath).delete();
-
-    return { success: true }
-  } catch (e: any) {
-    return { err: e.message }
-  }
+  return firebaseDeleteByUrl(fileUrl);
 }
 
 export async function deleteFileByPath(filePath: string) {
-  try {
-    await bucket.file(filePath).delete();
-
-    return { success: true }
-  } catch (e: any) {
-    return { err: e.message }
-  }
+  return firebaseDeleteByPath(filePath);
 }

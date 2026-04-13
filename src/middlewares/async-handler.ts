@@ -10,7 +10,9 @@ export default function asyncHandler(controller: string, requestHandler: Request
 
       console.error(`Error occurred in -> ${req.method.toUpperCase()} ${controller}`);
       console.error('\n\x1b[31m%s\x1b[0m\n', message);
-      console.error(err.stack);
+      if (err instanceof Error && err.stack) {
+        console.error(err.stack);
+      }
 
       res.status(status).json({ success: false, data: null, message });
     }

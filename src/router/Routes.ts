@@ -1,4 +1,5 @@
 //= Routes & Controllers
+import '../components/Media/media.controller';
 import '../components/Root/root.controller';
 import '../components/Auth/auth.controller';
 import '../components/User/user.controller';

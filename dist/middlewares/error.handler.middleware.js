@@ -20,7 +20,9 @@ function errorHandlerMiddleware(error, req, res) {
     const status = error.status || 500;
     const message = error.message || 'Something went wrong';
     console.error('\n\x1b[31m%s\x1b[0m\n', message);
-    console.error(error.stack);
+    if (error instanceof Error && error.stack) {
+        console.error(error.stack);
+    }
     res.status(status).json({ success: false, data: null, message });
 }
 exports.default = errorHandlerMiddleware;

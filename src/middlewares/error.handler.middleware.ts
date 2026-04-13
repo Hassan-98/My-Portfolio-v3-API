@@ -20,7 +20,9 @@ function errorHandlerMiddleware(error: HttpException, req: Request, res: Respons
   const message: string = error.message || 'Something went wrong';
 
   console.error('\n\x1b[31m%s\x1b[0m\n', message);
-  console.error(error.stack);
+  if (error instanceof Error && error.stack) {
+    console.error(error.stack);
+  }
 
   res.status(status).json({ success: false, data: null, message });
 }

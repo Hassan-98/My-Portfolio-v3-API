@@ -12,7 +12,8 @@
     "build": "npm run compile",
     "start": "node dist/index.js",
     "pretest": "npm run clean && npm run compile",
-    "test": "cross-env NODE_ENV=testing jasmine"
+    "test": "cross-env NODE_ENV=testing jasmine",
+    "migrate:firebase-urls": "ts-node src/scripts/migrate-firebase-urls-to-telegram.ts"
   },
   "keywords": [],
   "author": "Hassan Ali",

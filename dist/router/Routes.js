@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 //= Routes & Controllers
+require("../components/Media/media.controller");
 require("../components/Root/root.controller");
 require("../components/Auth/auth.controller");
 require("../components/User/user.controller");
