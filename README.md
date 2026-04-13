@@ -11,8 +11,8 @@ Provision the necessary ENV variables needed for running the application:
 1. Create a database at MongoDB Atlas (or use local MongoDB for development).
 2. Choose **file storage** (see below): Firebase / Google Cloud Storage, or Telegram ([Bot API](https://core.telegram.org/bots/api)).
 3. Export the ENV variables needed or use a package like [dotenv](https://www.npmjs.com/package/dotenv).
-4. From the root of the repo, navigate to the Server folder `cd /Server` to install the node_modules `npm install`. After installation is done start the api in dev mode with `npm run dev`.
-5. Without closing the terminal in step 1, navigate to the Client `cd /Client` to install the node_modules `npm install`. After installation is done start the app in dev mode with `npm run start`.
+4. From the root of the repo, navigate to the Server folder `cd /Server` to install dependencies with **Yarn**: `yarn install`. Then start the API in dev mode with `yarn dev`.
+5. Without closing the terminal in step 1, navigate to the Client `cd /Client`, run `yarn install`, then start the app in dev mode with `yarn start` (or whatever script the Client defines).
 
 ### File storage (`STORAGE_PROVIDER`)
 
@@ -41,7 +41,7 @@ Storage uses HTTPS to `https://api.telegram.org/bot<token>/…` as documented in
 
 With `STORAGE_PROVIDER=telegram` and a DB backup, run:
 
-`npm run migrate:firebase-urls`
+`yarn migrate:firebase-urls`
 
 This walks collections, downloads `firebasestorage.googleapis.com` URLs, re-uploads via the current storage layer, and replaces strings in place.
 
@@ -52,7 +52,7 @@ This walks collections, downloads `firebasestorage.googleapis.com` URLs, re-uplo
 This project contains two different test suite: unit tests and End-To-End tests(e2e). Follow these steps to run the tests.
 
 1. `cd Server`
-2. `npm run test`
+2. `yarn test`
 
 There are no Unit test on the back-end
 
