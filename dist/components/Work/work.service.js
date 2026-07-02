@@ -99,6 +99,20 @@ class WorkService {
             return work;
         });
     }
+    uploadScreens(files, folder) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!files || !files.length)
+                throw (0, error_handler_middleware_1.HttpError)(400, error_messages_1.default.REQUIRED('screens'));
+            try {
+                const uploads = yield Promise.all(files.map((file) => (0, storage_util_1.uploadFileToStorage)({ file, fileType: 'image', folder })));
+                return uploads.map((upload) => upload.url);
+            }
+            catch (error) {
+                console.log(error);
+                throw (0, error_handler_middleware_1.HttpError)(400, error.message);
+            }
+        });
+    }
     updateWorksOrder(newOrder) {
         return __awaiter(this, void 0, void 0, function* () {
             const writes = newOrder.map(Order => ({

@@ -33,6 +33,11 @@ const storage_util_1 = require("./../../storage/storage.util");
 //= Validations
 const work_validation_1 = require("./work.validation");
 const Service = new work_service_1.default();
+// Structured fields that arrive as JSON strings on multipart/form-data requests
+const JSON_FIELDS = [
+    'stack', 'links', 'order', 'showInCv', 'showInWebsite', 'isTcgWork',
+    'timeline', 'metrics', 'roles', 'modules', 'flows', 'outcomes', 'apps', 'architecture', 'templateMeta'
+];
 let WorksController = class WorksController {
     getAllWorks(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -64,6 +69,15 @@ let WorksController = class WorksController {
         return __awaiter(this, void 0, void 0, function* () {
             yield Service.updateWorksOrder(req.body);
             res.status(200).json({ success: true, data: null });
+        });
+    }
+    ;
+    uploadScreens(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const files = req.files;
+            const folder = typeof req.body.folder === 'string' && req.body.folder.trim() ? req.body.folder.trim() : 'screens';
+            const urls = yield Service.uploadScreens(files, folder);
+            res.status(201).json({ success: true, data: urls });
         });
     }
     ;
@@ -104,7 +118,7 @@ __decorate([
     (0, decorators_1.Post)('/'),
     (0, decorators_1.Use)(auth_middleware_1.Authenticated),
     (0, decorators_1.Use)(storage_util_1.multer.fields([{ name: "desktop", maxCount: 1 }, { name: "mobile", maxCount: 1 }])),
-    (0, decorators_1.Use)((0, validation_middleware_1.bodyValidator)(work_validation_1.WorkSchema, ['stack', 'links', 'order', 'showInCv', 'showInWebsite', 'isTcgWork'])),
+    (0, decorators_1.Use)((0, validation_middleware_1.bodyValidator)(work_validation_1.WorkSchema, JSON_FIELDS)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
@@ -118,11 +132,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], WorksController.prototype, "updateWorkOrder", null);
 __decorate([
+    (0, decorators_1.Post)('/screens'),
+    (0, decorators_1.Use)(auth_middleware_1.Authenticated),
+    (0, decorators_1.Use)(storage_util_1.multer.array('screens', 40)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], WorksController.prototype, "uploadScreens", null);
+__decorate([
     (0, decorators_1.Patch)('/:id'),
     (0, decorators_1.Use)(auth_middleware_1.Authenticated),
     (0, decorators_1.Use)((0, validation_middleware_1.paramsValidator)(work_validation_1.IDSchema)),
     (0, decorators_1.Use)(storage_util_1.multer.fields([{ name: "desktop", maxCount: 1 }, { name: "mobile", maxCount: 1 }])),
-    (0, decorators_1.Use)((0, validation_middleware_1.bodyValidator)(work_validation_1.WorkSchema.partial(), ['stack', 'links', 'order', 'showInCv', 'showInWebsite', 'isTcgWork'])),
+    (0, decorators_1.Use)((0, validation_middleware_1.bodyValidator)(work_validation_1.WorkSchema.partial(), JSON_FIELDS)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)

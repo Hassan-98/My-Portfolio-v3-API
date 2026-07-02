@@ -98,7 +98,8 @@ const uploadFileToStorage = ({ file, fileType = 'file', folder, covertToWebp = t
             default:
                 return reject('File is not supported');
         }
-        const newFileName = `${resolvedFileType}_${Date.now()}`;
+        // Random suffix prevents collisions when multiple files upload within the same millisecond (bulk uploads)
+        const newFileName = `${resolvedFileType}_${Date.now()}_${Math.round(Math.random() * 1e9)}`;
         const logicalPath = folder
             ? `${resolvedFileType}s/${folder}/${newFileName}`
             : `${resolvedFileType}s/${newFileName}`;

@@ -17,17 +17,18 @@ const axios_1 = __importDefault(require("axios"));
 //= Utils
 const storage_util_1 = require("./storage.util");
 exports.default = (url, folder, fileType = "image") => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _a, _b;
     const imageResponse = yield axios_1.default.get(url, { responseType: 'arraybuffer' });
     if (!imageResponse)
         throw new Error(`Can't get image from ${url}`);
+    const contentType = String((_a = imageResponse === null || imageResponse === void 0 ? void 0 : imageResponse.headers['content-type']) !== null && _a !== void 0 ? _a : '');
     let file = {
         buffer: Buffer.from(imageResponse.data, "binary"),
         fieldname: "image",
-        originalname: `external-image.${(_a = imageResponse === null || imageResponse === void 0 ? void 0 : imageResponse.headers['content-type']) === null || _a === void 0 ? void 0 : _a.split("/")[1]}`,
+        originalname: `external-image.${contentType.split("/")[1]}`,
         encoding: "binary",
-        mimetype: (imageResponse === null || imageResponse === void 0 ? void 0 : imageResponse.headers['content-type']) || '',
-        size: parseInt((imageResponse === null || imageResponse === void 0 ? void 0 : imageResponse.headers['content-length']) || '0') || 0
+        mimetype: contentType,
+        size: parseInt(String((_b = imageResponse === null || imageResponse === void 0 ? void 0 : imageResponse.headers['content-length']) !== null && _b !== void 0 ? _b : '0')) || 0
     };
     const uploadedPicture = yield (0, storage_util_1.uploadFileToStorage)({ file, fileType, folder });
     return uploadedPicture;

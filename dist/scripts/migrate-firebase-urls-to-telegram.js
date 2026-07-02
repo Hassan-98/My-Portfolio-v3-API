@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Prerequisites: STORAGE_PROVIDER=telegram, TELEGRAM_BOT_TOKEN + TELEGRAM_STORAGE_PEER + Mongo env, API logic via imports.
  * Run: yarn migrate:firebase-urls
  *
- * Optional: MIGRATE_TELEGRAM_DELAY_MS — ms to wait after each successful Telegram upload (default 10000).
+ * Optional: MIGRATE_TELEGRAM_DELAY_MS — ms to wait after each successful Telegram upload (default 3000).
  * Helps avoid Bot API "Too Many Requests"; on 429 the script waits for "retry after N" when present.
  *
  * Back up your database first.
@@ -39,13 +39,13 @@ const storage_util_1 = require("../storage/storage.util");
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-/** Default 10s between Telegram uploads to reduce rate limits. */
+/** Default 3s between Telegram uploads to reduce rate limits. */
 function telegramSpacingMs() {
     const raw = process.env.MIGRATE_TELEGRAM_DELAY_MS;
     if (raw === undefined || raw.trim() === '')
-        return 5000;
+        return 3000;
     const n = Number(raw);
-    return Number.isFinite(n) && n >= 0 ? n : 5000;
+    return Number.isFinite(n) && n >= 0 ? n : 3000;
 }
 /** Parses "retry after 38" from Telegram / Bot API error text (seconds). */
 function parseRetryAfterSeconds(message) {
