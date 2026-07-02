@@ -16,7 +16,7 @@ const stack_model_1 = __importDefault(require("./stack.model"));
 const stack_types_1 = require("./stack.types");
 /**
  * Default stack logos point at Firebase Storage URLs. That matches STORAGE_PROVIDER=firebase.
- * For Telegram-only hosting, run `npm run migrate:firebase-urls` after seeding (or with existing data)
+ * For Telegram-only hosting, run `yarn migrate:firebase-urls` after seeding (or with existing data)
  * to rewrite those URLs to this API’s `/media/:id` links, or replace URLs here manually.
  */
 function migrateStacks() {

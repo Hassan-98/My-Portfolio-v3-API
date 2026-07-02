@@ -20,9 +20,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
- * Rewrites string fields containing firebasestorage.googleapis.com URLs to new Telegram /media/:id URLs.
+ * Rewrites string fields containing Firebase / GCS file URLs to Telegram /media/:id URLs.
+ * Matches strings that include `firebasestorage.googleapis.com`, `firebasestorage.app`, or `storage.googleapis.com`
+ * (signed GCS URLs like storage.googleapis.com/bucket.appspot.com/...).
  * Prerequisites: STORAGE_PROVIDER=telegram, TELEGRAM_BOT_TOKEN + TELEGRAM_STORAGE_PEER + Mongo env, API logic via imports.
- * Run: npm run migrate:firebase-urls
+ * Run: yarn migrate:firebase-urls
+ *
+ * Optional: MIGRATE_TELEGRAM_DELAY_MS — ms to wait after each successful Telegram upload (default 10000).
+ * Helps avoid Bot API "Too Many Requests"; on 429 the script waits for "retry after N" when present.
  *
  * Back up your database first.
  */
@@ -31,21 +36,57 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const axios_1 = __importDefault(require("axios"));
 const app_config_1 = __importDefault(require("../configs/app.config"));
 const storage_util_1 = require("../storage/storage.util");
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+/** Default 10s between Telegram uploads to reduce rate limits. */
+function telegramSpacingMs() {
+    const raw = process.env.MIGRATE_TELEGRAM_DELAY_MS;
+    if (raw === undefined || raw.trim() === '')
+        return 5000;
+    const n = Number(raw);
+    return Number.isFinite(n) && n >= 0 ? n : 5000;
+}
+/** Parses "retry after 38" from Telegram / Bot API error text (seconds). */
+function parseRetryAfterSeconds(message) {
+    const m = /retry\s+after\s+(\d+)/i.exec(message);
+    if (!m)
+        return undefined;
+    const sec = Number(m[1]);
+    return Number.isFinite(sec) && sec >= 0 ? sec : undefined;
+}
+function isTelegramRateLimitError(e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return /too many requests|429|retry\s+after/i.test(msg);
+}
 function isPlainObject(value) {
     return typeof value === 'object' && value !== null && !Array.isArray(value) && value.constructor === Object;
 }
+/** Already migrated to this API’s proxy path (skip). */
+function looksLikeOurMediaUrl(s) {
+    return /\/media\/[a-f\d]{24}/i.test(s);
+}
 function needsMigration(value) {
-    return typeof value === 'string' && value.includes('firebasestorage.googleapis.com');
+    if (typeof value !== 'string' || value.length < 16)
+        return false;
+    if (looksLikeOurMediaUrl(value))
+        return false;
+    const s = value.toLowerCase();
+    return (s.includes('firebasestorage.googleapis.com') ||
+        s.includes('firebasestorage.app') ||
+        s.includes('storage.googleapis.com'));
 }
 function migrateString(url) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const res = yield axios_1.default.get(url, { responseType: 'arraybuffer', maxRedirects: 5 });
+        const trimmed = url.trim();
+        const res = yield axios_1.default.get(trimmed, { responseType: 'arraybuffer', maxRedirects: 5 });
         const buffer = Buffer.from(res.data);
         const ct = res.headers['content-type'] || 'application/octet-stream';
-        const isSvg = ct.includes('svg') || url.toLowerCase().includes('.svg');
         const file = {
             fieldname: 'file',
-            originalname: 'migrated',
+            // Extension unused when fileType is "file"; avoids FilterAndCompressImages ("Image type is not supported" with originalname "migrated").
+            originalname: 'migrated.bin',
             encoding: '7bit',
             mimetype: ct,
             size: buffer.length,
@@ -54,12 +95,32 @@ function migrateString(url) {
             filename: '',
             path: '',
         };
-        const uploaded = yield (0, storage_util_1.uploadFileToStorage)({
-            file,
-            fileType: isSvg ? 'file' : 'image',
-            folder: 'firebase-migration',
-        });
-        return uploaded.url;
+        const spacingMs = telegramSpacingMs();
+        const maxUploadAttempts = 20;
+        for (let attempt = 1; attempt <= maxUploadAttempts; attempt++) {
+            try {
+                const uploaded = yield (0, storage_util_1.uploadFileToStorage)({
+                    file,
+                    // Always "file" so filters do not require a whitelisted image extension on originalname (migration has no real filename).
+                    fileType: 'file',
+                    folder: 'firebase-migration',
+                });
+                if (spacingMs > 0) {
+                    yield sleep(spacingMs);
+                }
+                return uploaded.url;
+            }
+            catch (e) {
+                if (!isTelegramRateLimitError(e) || attempt === maxUploadAttempts) {
+                    throw e;
+                }
+                const msg = e instanceof Error ? e.message : String(e);
+                const retrySec = (_a = parseRetryAfterSeconds(msg)) !== null && _a !== void 0 ? _a : Math.max(1, Math.ceil(spacingMs / 1000));
+                console.warn(`Telegram rate limit (${attempt}/${maxUploadAttempts}), waiting ${retrySec}s then retrying…`);
+                yield sleep(retrySec * 1000);
+            }
+        }
+        throw new Error('migrateString: upload retries exhausted');
     });
 }
 function transformValue(value) {
@@ -94,20 +155,7 @@ function transformValue(value) {
 function connectMongo() {
     return __awaiter(this, void 0, void 0, function* () {
         const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH, MONGO_DATABASE, MONGO_DEV_DATABASE, NODE_ENV } = process.env;
-        const isProduction = NODE_ENV === 'production';
-        const isTesting = NODE_ENV === 'testing';
-        if (isProduction && !isTesting) {
-            yield mongoose_1.default.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_PATH}/${MONGO_DATABASE}?retryWrites=true&w=majority`);
-        }
-        else if (isTesting && isProduction) {
-            yield mongoose_1.default.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_PATH}/${MONGO_DATABASE}-testing`);
-        }
-        else if (isTesting && !isProduction) {
-            yield mongoose_1.default.connect(`mongodb://127.0.0.1:27017/${MONGO_DEV_DATABASE}-testing`);
-        }
-        else {
-            yield mongoose_1.default.connect(`mongodb://127.0.0.1:27017/${MONGO_DEV_DATABASE}`);
-        }
+        yield mongoose_1.default.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_PATH}/${MONGO_DATABASE}?retryWrites=true&w=majority`);
     });
 }
 function main() {
@@ -118,6 +166,8 @@ function main() {
             console.error('Set STORAGE_PROVIDER=telegram before running this migration.');
             process.exit(1);
         }
+        const spacing = telegramSpacingMs();
+        console.log(`MIGRATE_TELEGRAM_DELAY_MS=${spacing} (pause after each successful Telegram upload)`);
         yield connectMongo();
         const db = mongoose_1.default.connection.db;
         if (!db) {

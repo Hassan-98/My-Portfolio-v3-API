@@ -43,7 +43,7 @@ With `STORAGE_PROVIDER=telegram` and a DB backup, run:
 
 `yarn migrate:firebase-urls`
 
-This walks collections, downloads `firebasestorage.googleapis.com` URLs, re-uploads via the current storage layer, and replaces strings in place.
+This walks collections, finds Firebase-style file URLs in string fields (including `storage.googleapis.com/…appspot.com…` forms), re-uploads via the current storage layer, and replaces strings in place. To avoid Telegram Bot API rate limits, set `MIGRATE_TELEGRAM_DELAY_MS` (milliseconds to pause after each successful upload; default `10000`). If Telegram still returns “Too Many Requests”, the script waits for the `retry after` hint and retries. At the end it scans the DB and warns if any Firebase-style URLs remain.
 
 **Note:** If you previously used GramJS user-session storage, old `TelegramStoredFile` rows without `telegramFileId` cannot be served; re-upload those assets or migrate data.
 
