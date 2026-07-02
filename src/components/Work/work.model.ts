@@ -1,9 +1,87 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
-import { IWork, IWorkDocument, Importance } from './work.types';
+import { IWork, IWorkDocument, Importance, WorkKind } from './work.types';
 import { StackType } from '../../types';
 import { HttpError } from '../../middlewares/error.handler.middleware';
 import errorMessages from '../../utils/error-messages';
+
+const emptyToUndefined = (value: string) => (typeof value === 'string' && value.trim() === '' ? undefined : value);
+
+const AnnotationSchema = new mongoose.Schema({
+  x: { type: Number, min: 0, max: 100 },
+  y: { type: Number, min: 0, max: 100 },
+  note: { type: String, trim: true }
+}, { _id: false });
+
+const ScreenSchema = new mongoose.Schema({
+  image: { type: String, trim: true, required: true },
+  caption: { type: String, trim: true },
+  roles: { type: [String], default: undefined },
+  annotations: { type: [AnnotationSchema], default: undefined }
+}, { _id: false });
+
+const ModuleSchema = new mongoose.Schema({
+  name: { type: String, trim: true, required: true },
+  icon: { type: String, trim: true },
+  blurb: { type: String, trim: true },
+  roles: { type: [String], default: undefined },
+  screens: { type: [ScreenSchema], default: [] }
+}, { _id: false });
+
+const FlowStepSchema = new mongoose.Schema({
+  image: { type: String, trim: true },
+  caption: { type: String, trim: true, required: true },
+  app: { type: String, trim: true }
+}, { _id: false });
+
+const FlowSchema = new mongoose.Schema({
+  title: { type: String, trim: true, required: true },
+  description: { type: String, trim: true },
+  steps: { type: [FlowStepSchema], default: [] }
+}, { _id: false });
+
+const MetricSchema = new mongoose.Schema({
+  label: { type: String, trim: true, required: true },
+  value: { type: String, trim: true, required: true },
+  icon: { type: String, trim: true }
+}, { _id: false });
+
+const AppSchema = new mongoose.Schema({
+  name: { type: String, trim: true, required: true },
+  audience: { type: String, trim: true },
+  platform: { type: String, trim: true },
+  icon: { type: String, trim: true },
+  color: { type: String, trim: true },
+  blurb: { type: String, trim: true },
+  screens: { type: [ScreenSchema], default: undefined },
+  links: {
+    type: new mongoose.Schema({
+      demo: { type: String, trim: true },
+      github: { type: String, trim: true }
+    }, { _id: false }),
+    default: undefined
+  }
+}, { _id: false });
+
+const ArchitectureSchema = new mongoose.Schema({
+  nodes: {
+    type: [new mongoose.Schema({
+      id: { type: String, trim: true, required: true },
+      label: { type: String, trim: true, required: true },
+      icon: { type: String, trim: true },
+      kind: { type: String, trim: true }
+    }, { _id: false })],
+    default: []
+  },
+  edges: {
+    type: [new mongoose.Schema({
+      from: { type: String, trim: true, required: true },
+      to: { type: String, trim: true, required: true },
+      label: { type: String, trim: true }
+    }, { _id: false })],
+    default: []
+  }
+}, { _id: false });
 
 const WorkSchema = new mongoose.Schema<IWorkDocument>({
   name: {
@@ -51,6 +129,72 @@ const WorkSchema = new mongoose.Schema<IWorkDocument>({
   isTcgWork: {
     type: Boolean,
     default: false
+  },
+  kind: {
+    type: String,
+    trim: true,
+    enum: [WorkKind.Standard, WorkKind.CaseStudy, WorkKind.Ecosystem, WorkKind.Template],
+    default: WorkKind.Standard
+  },
+  slug: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    set: emptyToUndefined,
+    index: {
+      unique: true,
+      sparse: true
+    }
+  },
+  tagline: {
+    type: String,
+    trim: true,
+    set: emptyToUndefined
+  },
+  timeline: {
+    type: new mongoose.Schema({
+      start: { type: String, trim: true },
+      end: { type: String, trim: true }
+    }, { _id: false }),
+    default: undefined
+  },
+  metrics: {
+    type: [MetricSchema],
+    default: undefined
+  },
+  roles: {
+    type: [String],
+    default: undefined
+  },
+  modules: {
+    type: [ModuleSchema],
+    default: undefined
+  },
+  flows: {
+    type: [FlowSchema],
+    default: undefined
+  },
+  outcomes: {
+    type: [MetricSchema],
+    default: undefined
+  },
+  apps: {
+    type: [AppSchema],
+    default: undefined
+  },
+  architecture: {
+    type: ArchitectureSchema,
+    default: undefined
+  },
+  templateMeta: {
+    type: new mongoose.Schema({
+      sales: { type: Number, min: 0 },
+      rating: { type: Number, min: 0, max: 5 },
+      category: { type: String, trim: true },
+      envatoUrl: { type: String, trim: true },
+      previewUrl: { type: String, trim: true }
+    }, { _id: false }),
+    default: undefined
   },
   links: {
     github: {

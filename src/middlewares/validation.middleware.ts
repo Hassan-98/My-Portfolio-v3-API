@@ -6,7 +6,8 @@ export function bodyValidator(Schema: any, toBeParsedFields?: string[]): Request
     let body = req.body;
     if (toBeParsedFields && toBeParsedFields.length) {
       toBeParsedFields.forEach(field => {
-        if (req.body[field]) body[field] = JSON.parse(req.body[field]);
+        // Only multipart/form-data requests need parsing; JSON bodies arrive already parsed
+        if (req.body[field] && typeof req.body[field] === 'string') body[field] = JSON.parse(req.body[field]);
       })
     }
 

@@ -14,6 +14,12 @@ import { IDSchema, OrderSchema, WorkSchema } from './work.validation';
 
 const Service = new WorkService();
 
+// Structured fields that arrive as JSON strings on multipart/form-data requests
+const JSON_FIELDS = [
+  'stack', 'links', 'order', 'showInCv', 'showInWebsite', 'isTcgWork',
+  'timeline', 'metrics', 'roles', 'modules', 'flows', 'outcomes', 'apps', 'architecture', 'templateMeta'
+];
+
 @Controller('/works')
 class WorksController {
   @Get('/')
@@ -32,7 +38,7 @@ class WorksController {
   @Post('/')
   @Use(Authenticated)
   @Use(multer.fields([{ name: "desktop", maxCount: 1 }, { name: "mobile", maxCount: 1 }]))
-  @Use(bodyValidator(WorkSchema, ['stack', 'links', 'order', 'showInCv', 'showInWebsite', 'isTcgWork']))
+  @Use(bodyValidator(WorkSchema, JSON_FIELDS))
   public async addNewWork(req: Request, res: Response) {
     const uploaded_images = req.files as { [fieldname: string]: Express.Multer.File[] };
 
@@ -53,11 +59,22 @@ class WorksController {
     res.status(200).json({ success: true, data: null });
   };
 
+  @Post('/screens')
+  @Use(Authenticated)
+  @Use(multer.array('screens', 40))
+  public async uploadScreens(req: Request, res: Response) {
+    const files = req.files as Express.Multer.File[];
+    const folder = typeof req.body.folder === 'string' && req.body.folder.trim() ? req.body.folder.trim() : 'screens';
+
+    const urls = await Service.uploadScreens(files, folder);
+    res.status(201).json({ success: true, data: urls });
+  };
+
   @Patch('/:id')
   @Use(Authenticated)
   @Use(paramsValidator(IDSchema))
   @Use(multer.fields([{ name: "desktop", maxCount: 1 }, { name: "mobile", maxCount: 1 }]))
-  @Use(bodyValidator(WorkSchema.partial(), ['stack', 'links', 'order', 'showInCv', 'showInWebsite', 'isTcgWork']))
+  @Use(bodyValidator(WorkSchema.partial(), JSON_FIELDS))
   public async updateWork(req: Request, res: Response) {
     const uploaded_images = req.files as { [fieldname: string]: Express.Multer.File[] };
     let images;

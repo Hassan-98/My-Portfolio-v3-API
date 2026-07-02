@@ -96,6 +96,20 @@ class WorkService {
     return work;
   }
 
+  public async uploadScreens(files: Express.Multer.File[], folder: string): Promise<string[]> {
+    if (!files || !files.length) throw HttpError(400, errorMessages.REQUIRED('screens'));
+
+    try {
+      const uploads = await Promise.all(
+        files.map((file) => uploadFileToStorage({ file, fileType: 'image', folder }))
+      );
+      return uploads.map((upload) => upload.url);
+    } catch (error: any) {
+      console.log(error);
+      throw HttpError(400, error.message);
+    }
+  }
+
   public async updateWorksOrder(newOrder: { id: string, order: number }[]): Promise<boolean> {
     const writes = newOrder.map(Order => ({
       updateOne: {
