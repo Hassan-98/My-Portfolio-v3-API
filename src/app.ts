@@ -10,6 +10,8 @@ import cors, { CorsOptions, CorsRequest } from 'cors';
 //= Router
 import { AppRouter } from './router/AppRouter';
 import './router/Routes';
+//= Utils
+import { shouldRevalidate, pingFrontendRevalidate } from './utils/revalidateFrontend';
 //= Seedings
 import seedGeneralSettings from './components/General/general.seeding';
 import seedStacks from './components/Stack/stack.seeding';
@@ -79,6 +81,17 @@ class App {
     // Setting JSON in Body Of Requests
     this.app.use(express.json({ limit: '20mb' }));
     this.app.use(express.urlencoded({ limit: '20mb', extended: true }));
+
+    // On successful content mutations, ping the frontend to revalidate its
+    // static pages immediately (instant-on-save instead of the ISR window).
+    this.app.use((req, res, next) => {
+      res.on('finish', () => {
+        if (res.statusCode < 400 && shouldRevalidate(req.method, req.path)) {
+          pingFrontendRevalidate();
+        }
+      });
+      next();
+    });
   }
 
   public initializeAppRouter() {
