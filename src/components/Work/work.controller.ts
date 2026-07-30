@@ -17,7 +17,7 @@ const Service = new WorkService();
 // Structured fields that arrive as JSON strings on multipart/form-data requests
 const JSON_FIELDS = [
   'stack', 'links', 'order', 'showInCv', 'showInWebsite', 'isTcgWork',
-  'timeline', 'metrics', 'roles', 'modules', 'flows', 'outcomes', 'apps', 'architecture', 'templateMeta'
+  'timeline', 'metrics', 'roles', 'domains', 'modules', 'flows', 'outcomes', 'apps', 'architecture', 'templateMeta'
 ];
 
 @Controller('/works')

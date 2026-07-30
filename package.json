@@ -13,7 +13,8 @@
     "start": "node dist/index.js",
     "pretest": "yarn clean && yarn compile",
     "test": "cross-env NODE_ENV=testing jasmine",
-    "migrate:firebase-urls": "ts-node src/scripts/migrate-firebase-urls-to-telegram.ts"
+    "migrate:firebase-urls": "ts-node src/scripts/migrate-firebase-urls-to-telegram.ts",
+    "backfill:domains": "ts-node src/scripts/backfill-work-domains.ts"
   },
   "keywords": [],
   "author": "Hassan Ali",

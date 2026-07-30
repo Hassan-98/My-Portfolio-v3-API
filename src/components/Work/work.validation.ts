@@ -4,7 +4,7 @@ import { z } from 'zod';
 import checkObjectId from '../../utils/checkObjectId';
 //= Types
 import { StackType } from '../../types';
-import { Importance, WorkKind } from './work.types';
+import { Importance, WorkKind, WorkDomain } from './work.types';
 
 const AnnotationSchema = z.object({
   x: z.number().min(0).max(100),
@@ -34,6 +34,7 @@ export const WorkSchema = z.object({
   showInWebsite: z.boolean(),
   isTcgWork: z.boolean(),
   kind: z.nativeEnum(WorkKind).optional(),
+  domains: z.array(z.nativeEnum(WorkDomain)).optional(),
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "must be a kebab-case slug" }).optional().or(z.literal('')),
   tagline: z.string().optional(),
   timeline: z.object({

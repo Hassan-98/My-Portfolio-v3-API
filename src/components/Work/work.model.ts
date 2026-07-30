@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
-import { IWork, IWorkDocument, Importance, WorkKind } from './work.types';
+import { IWork, IWorkDocument, Importance, WorkKind, WorkDomain } from './work.types';
 import { StackType } from '../../types';
 import { HttpError } from '../../middlewares/error.handler.middleware';
 import errorMessages from '../../utils/error-messages';
@@ -135,6 +135,16 @@ const WorkSchema = new mongoose.Schema<IWorkDocument>({
     trim: true,
     enum: [WorkKind.Standard, WorkKind.CaseStudy, WorkKind.Ecosystem, WorkKind.Template],
     default: WorkKind.Standard
+  },
+  domains: {
+    type: [{
+      type: String,
+      trim: true,
+      lowercase: true,
+      enum: Object.values(WorkDomain)
+    }],
+    default: undefined,
+    index: true
   },
   slug: {
     type: String,

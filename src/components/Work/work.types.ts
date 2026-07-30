@@ -14,6 +14,34 @@ export enum WorkKind {
   Template = "template"
 }
 
+/**
+ * Industry domain a work belongs to — the axis visitors filter by on the
+ * portfolio ("has this person built an LMS before?"). A work can span
+ * several domains (a gaming store is both `gaming` and `e-commerce`).
+ *
+ * This enum is the source of truth; the Admin picker and the portfolio's
+ * label/icon map mirror it. Adding a value here is safe — the portfolio
+ * only renders chips for domains that actually have works.
+ */
+export enum WorkDomain {
+  ELearning = "e-learning",
+  ECommerce = "e-commerce",
+  Gaming = "gaming",
+  Healthcare = "healthcare",
+  Fintech = "fintech",
+  Security = "security",
+  Corporate = "corporate",
+  DevTools = "dev-tools",
+  Creative = "creative",
+  Media = "media",
+  Sports = "sports",
+  Food = "food",
+  Events = "events",
+  RealEstate = "real-estate",
+  Logistics = "logistics",
+  NonProfit = "non-profit"
+}
+
 export interface IScreenAnnotation {
   x: number; // 0-100 (% of image width)
   y: number; // 0-100 (% of image height)
@@ -97,6 +125,7 @@ export interface IWork {
   showInWebsite: boolean;
   isTcgWork: boolean;
   kind?: WorkKind;
+  domains?: WorkDomain[];
   slug?: string;
   tagline?: string;
   timeline?: {

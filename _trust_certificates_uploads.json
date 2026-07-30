@@ -1,0 +1,20 @@
+{
+  "portal": "https://api.hassanali.tk/media/6a6aba4a286e8b1e0b31c7ba",
+  "azhar_login": "https://api.hassanali.tk/media/6a6aba4c286e8b1e0b31c7bd",
+  "azhar_dashboard": "https://api.hassanali.tk/media/6a6aba4e286e8b1e0b31c7c0",
+  "azhar_editor": "https://api.hassanali.tk/media/6a6aba4f286e8b1e0b31c7c3",
+  "azhar_certificate": "https://api.hassanali.tk/media/6a6aba51286e8b1e0b31c7c6",
+  "eng_dashboard": "https://api.hassanali.tk/media/6a6aba52286e8b1e0b31c7c9",
+  "eng_editor": "https://api.hassanali.tk/media/6a6aba54286e8b1e0b31c7cc",
+  "eng_certificate": "https://api.hassanali.tk/media/6a6aba55286e8b1e0b31c7cf",
+  "ara_dashboard": "https://api.hassanali.tk/media/6a6aba57286e8b1e0b31c7d2",
+  "ara_certificate": "https://api.hassanali.tk/media/6a6aba59286e8b1e0b31c7d5",
+  "meshkat_login": "https://api.hassanali.tk/media/6a6aba5a286e8b1e0b31c7d8",
+  "meshkat_dashboard": "https://api.hassanali.tk/media/6a6aba5c286e8b1e0b31c7db",
+  "meshkat_editor": "https://api.hassanali.tk/media/6a6aba5e286e8b1e0b31c7de",
+  "meshkat_form": "https://api.hassanali.tk/media/6a6aba5f286e8b1e0b31c7e1",
+  "contracts_login": "https://api.hassanali.tk/media/6a6aba61286e8b1e0b31c7e4",
+  "contracts_dashboard": "https://api.hassanali.tk/media/6a6aba62286e8b1e0b31c7e7",
+  "contracts_editor": "https://api.hassanali.tk/media/6a6aba64286e8b1e0b31c7ea",
+  "contracts_contract": "https://api.hassanali.tk/media/6a6aba66286e8b1e0b31c7ed"
+}
