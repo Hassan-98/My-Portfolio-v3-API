@@ -76,6 +76,10 @@ class ResumeService {
       if (resumePreferences) resumePreferences.set(key, updates[key as keyof IResume]);
     });
 
+    // `customizations` is a Mixed path — mongoose can't diff it, so an update
+    // that only changes a nested key would otherwise never be persisted.
+    if ('customizations' in updates) resumePreferences.markModified('customizations');
+
     await resumePreferences.save();
 
     return resumePreferences;

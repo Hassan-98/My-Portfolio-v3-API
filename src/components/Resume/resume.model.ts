@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
-import { CvSkillsPeriority, IResumeDocument } from './resume.types';
+import { CvSkillsPeriority, IResumeDocument, ResumeTemplateId } from './resume.types';
 import { HttpError } from '../../middlewares/error.handler.middleware';
 import errorMessages from '../../utils/error-messages';
 
@@ -23,6 +23,18 @@ const ResumeSchema = new mongoose.Schema<IResumeDocument>({
       default: false
     }
   }],
+  activeTemplate: {
+    type: String,
+    enum: Object.values(ResumeTemplateId),
+    default: ResumeTemplateId.classic
+  },
+  // Kept as Mixed and deliberately given no per-key defaults: the frontend owns
+  // each design's default palette/typography, so anything written here would
+  // shadow those defaults forever. An absent key means "inherit".
+  customizations: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
+  },
   links: {
     showEmail: {
       type: Boolean,
